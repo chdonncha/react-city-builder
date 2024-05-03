@@ -1,0 +1,10 @@
+.canvas-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
