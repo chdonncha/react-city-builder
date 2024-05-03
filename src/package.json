@@ -1,5 +1,6 @@
 {
-  "name": "src",
+  "homepage": "https://chdonncha.github.io/react-city-builder/",
+  "name": "react-city-builder",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
