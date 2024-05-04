@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/react-city-builder/static/css/main.c930e5c8.css",
-    "main.js": "/react-city-builder/static/js/main.c78ebe86.js",
+    "main.js": "/react-city-builder/static/js/main.3dfc5e4f.js",
     "static/js/453.c6cf19ae.chunk.js": "/react-city-builder/static/js/453.c6cf19ae.chunk.js",
     "index.html": "/react-city-builder/index.html",
     "main.c930e5c8.css.map": "/react-city-builder/static/css/main.c930e5c8.css.map",
-    "main.c78ebe86.js.map": "/react-city-builder/static/js/main.c78ebe86.js.map",
+    "main.3dfc5e4f.js.map": "/react-city-builder/static/js/main.3dfc5e4f.js.map",
     "453.c6cf19ae.chunk.js.map": "/react-city-builder/static/js/453.c6cf19ae.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c930e5c8.css",
-    "static/js/main.c78ebe86.js"
+    "static/js/main.3dfc5e4f.js"
   ]
 }
