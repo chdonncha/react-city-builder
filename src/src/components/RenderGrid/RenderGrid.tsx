@@ -50,7 +50,7 @@ const Grid = ({ size }) => {
     );
 };
 
-const GridAndAxes = () => {
+const GridAndAxes = ({ showGrid, showAxes }) => {
     const { camera } = useThree();
 
     useEffect(() => {
@@ -60,21 +60,32 @@ const GridAndAxes = () => {
 
     return (
         <>
-            <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']} />
-            <axesHelper args={[100]} />
+            {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']} />}
+            {showAxes && <axesHelper args={[100]} />}
             <Grid size={GRID_SIZE} />
         </>
     );
 };
 
 const RenderGrid = () => {
+    const [showGrid, setShowGrid] = useState(true);
+    const [showAxes, setShowAxes] = useState(true);
+
     return (
-        <Canvas>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[100, 100, 100]} />
-            <GridAndAxes />
-            <OrbitControls />
-        </Canvas>
+        <>
+            <button onClick={() => setShowGrid(!showGrid)}>
+                {showGrid ? 'Hide Grid' : 'Show Grid'}
+            </button>
+            <button onClick={() => setShowAxes(!showAxes)}>
+                {showAxes ? 'Hide Axes' : 'Show Axes'}
+            </button>
+            <Canvas>
+                <ambientLight intensity={0.5} />
+                <pointLight position={[100, 100, 100]} />
+                <GridAndAxes showGrid={showGrid} showAxes={showAxes} />
+                <OrbitControls />
+            </Canvas>
+        </>
     );
 };
 
