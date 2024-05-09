@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import {Canvas, useThree} from '@react-three/fiber';
+import {OrbitControls} from '@react-three/drei';
 import * as THREE from 'three';
 import './RenderGrid.css';
 import BuildMenu from '../BuildMenu/BuildMenu';
@@ -9,24 +9,24 @@ const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
 const CELL_SIZE = GRID_SIZE / GRID_DIVISIONS;
 
-const GridSquare = ({ position, selected, onClick }) => {
+const GridSquare = ({position, selected, onClick}) => {
     return (
         <mesh
             position={position}
             rotation={[-Math.PI / 2, 0, 0]}
             onClick={onClick}
         >
-            <planeGeometry args={[CELL_SIZE, CELL_SIZE]} />
-            <meshBasicMaterial color={selected ? 'lightgray' : 'white'} side={THREE.DoubleSide} />
+            <planeGeometry args={[CELL_SIZE, CELL_SIZE]}/>
+            <meshBasicMaterial color={selected ? 'lightgray' : 'white'} side={THREE.DoubleSide}/>
         </mesh>
     );
 };
 
-const Grid = ({ size }) => {
+const Grid = ({size}) => {
     const [selectedCell, setSelectedCell] = useState(null);
 
     const handleCellClick = (x, y) => {
-        setSelectedCell({ x, y });
+        setSelectedCell({x, y});
     };
 
     const cells = [];
@@ -51,8 +51,8 @@ const Grid = ({ size }) => {
     );
 };
 
-const GridAndAxes = ({ showGrid, showAxes }) => {
-    const { camera } = useThree();
+const GridAndAxes = ({showGrid, showAxes}) => {
+    const {camera} = useThree();
 
     useEffect(() => {
         camera.position.set(50, 50, 50);
@@ -61,9 +61,9 @@ const GridAndAxes = ({ showGrid, showAxes }) => {
 
     return (
         <>
-            {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']} />}
-            {showAxes && <axesHelper args={[100]} />}
-            <Grid size={GRID_SIZE} />
+            {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']}/>}
+            {showAxes && <axesHelper args={[100]}/>}
+            <Grid size={GRID_SIZE}/>
         </>
     );
 };
@@ -77,7 +77,7 @@ const RenderGrid = () => {
     const toggleAxesVisibility = () => setShowAxes(!showAxes);
 
     const handleSelectZone = (type, density) => {
-        setSelectedZone({ type, density });
+        setSelectedZone({type, density});
     };
 
     return (
@@ -92,10 +92,10 @@ const RenderGrid = () => {
                 showAxes={showAxes}
             />
             <Canvas>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[100, 100, 100]} />
-                <GridAndAxes showGrid={showGrid} showAxes={showAxes} />
-                <OrbitControls />
+                <ambientLight intensity={0.5}/>
+                <pointLight position={[100, 100, 100]}/>
+                <GridAndAxes showGrid={showGrid} showAxes={showAxes}/>
+                <OrbitControls/>
             </Canvas>
         </>
     );
