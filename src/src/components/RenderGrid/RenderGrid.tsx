@@ -71,12 +71,23 @@ const GridAndAxes = ({ showGrid, showAxes }) => {
 const RenderGrid = () => {
     const [showGrid, setShowGrid] = useState(true);
     const [showAxes, setShowAxes] = useState(true);
+    const [selectedZone, setSelectedZone] = useState({type: null, density: null});
+
+    const toggleGridVisibility = () => setShowGrid(!showGrid);
+    const toggleAxesVisibility = () => setShowAxes(!showAxes);
+
+    const handleSelectZone = (type, density) => {
+        setSelectedZone({ type, density });
+    };
 
     return (
         <>
             <BuildMenu
-                onToggleGrid={() => setShowGrid(!showGrid)}
-                onToggleAxes={() => setShowAxes(!showAxes)}
+                onToggleGridVisibility={toggleGridVisibility}
+                onToggleAxesVisibility={toggleAxesVisibility}
+                onSelectResidential={(density) => handleSelectZone('residential', density)}
+                onSelectCommercial={(density) => handleSelectZone('commercial', density)}
+                onSelectIndustrial={(density) => handleSelectZone('industrial', density)}
                 showGrid={showGrid}
                 showAxes={showAxes}
             />
