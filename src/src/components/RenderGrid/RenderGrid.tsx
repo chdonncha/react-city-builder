@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import './RenderGrid.css';
+import UIComponents from '../UIComponents/UIComponents';
 
 const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
@@ -73,12 +74,12 @@ const RenderGrid = () => {
 
     return (
         <>
-            <button onClick={() => setShowGrid(!showGrid)}>
-                {showGrid ? 'Hide Grid' : 'Show Grid'}
-            </button>
-            <button onClick={() => setShowAxes(!showAxes)}>
-                {showAxes ? 'Hide Axes' : 'Show Axes'}
-            </button>
+            <UIComponents
+                onToggleGrid={() => setShowGrid(!showGrid)}
+                onToggleAxes={() => setShowAxes(!showAxes)}
+                showGrid={showGrid}
+                showAxes={showAxes}
+            />
             <Canvas>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[100, 100, 100]} />
