@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UIComponents = ({ onToggleGrid, onToggleAxes, showGrid, showAxes }) => {
+const BuildMenu = ({ onToggleGrid, onToggleAxes, showGrid, showAxes }) => {
     return (
         <>
             <button onClick={onToggleGrid}>
@@ -13,4 +13,4 @@ const UIComponents = ({ onToggleGrid, onToggleAxes, showGrid, showAxes }) => {
     );
 };
 
-export default UIComponents;
+export default BuildMenu;

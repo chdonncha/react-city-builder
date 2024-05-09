@@ -3,7 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import './RenderGrid.css';
-import UIComponents from '../UIComponents/UIComponents';
+import BuildMenu from '../BuildMenu/BuildMenu';
 
 const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
@@ -74,7 +74,7 @@ const RenderGrid = () => {
 
     return (
         <>
-            <UIComponents
+            <BuildMenu
                 onToggleGrid={() => setShowGrid(!showGrid)}
                 onToggleAxes={() => setShowAxes(!showAxes)}
                 showGrid={showGrid}
