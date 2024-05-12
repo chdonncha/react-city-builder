@@ -73,4 +73,4 @@ const BuildMenu = ({
     );
 };
 
-export default BuildMenu;
+export {BuildMenu};
