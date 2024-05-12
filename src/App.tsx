@@ -1,13 +1,14 @@
 import React from 'react';
+
 import './App.css';
-import Grid from './components/RenderGrid/RenderGrid';
+import {RenderGrid} from './components/RenderGrid/RenderGrid';
 
 function App() {
-  return (
-      <div className="App">
-        <Grid/>
-      </div>
-  );
+    return (
+        <div className="App">
+            <RenderGrid/>
+        </div>
+    );
 }
 
-export default App;
+export {App};

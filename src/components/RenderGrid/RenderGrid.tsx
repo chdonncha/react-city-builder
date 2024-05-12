@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Canvas, useThree} from '@react-three/fiber';
 import {OrbitControls} from '@react-three/drei';
+import {Canvas, useThree} from '@react-three/fiber';
+import React, {useEffect, useState} from 'react';
 import * as THREE from 'three';
+
 import './RenderGrid.css';
-import BuildMenu from '../BuildMenu/BuildMenu';
+import {BuildMenu} from '../BuildMenu/BuildMenu';
 
 const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
@@ -54,7 +55,7 @@ const Grid: React.FC<GridProps> = ({size, selectedZone, currentSelected, setCurr
                     {
                         ...cell,
                         type: selectedZone.type,
-                        density: selectedZone.density
+                        density: selectedZone.density,
                     } :
                     cell
             ));
@@ -104,7 +105,7 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
                                                      showAxes,
                                                      selectedZone,
                                                      currentSelected,
-                                                     setCurrentSelected
+                                                     setCurrentSelected,
                                                  }) => {
     const {camera} = useThree();
 
@@ -128,7 +129,7 @@ const RenderGrid = () => {
     const [showAxes, setShowAxes] = useState(true);
     const [selectedZone, setSelectedZone] = useState<{ type: string | null, density: string | null }>({
         type: null,
-        density: null
+        density: null,
     });
     const [currentSelected, setCurrentSelected] = useState<{ x: number; y: number } | null>(null);
 
@@ -166,4 +167,4 @@ const RenderGrid = () => {
     );
 };
 
-export default RenderGrid;
+export {RenderGrid};
