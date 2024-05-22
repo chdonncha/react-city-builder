@@ -2,3 +2,12 @@
     background-color: grey;
     color: white;
 }
+
+.construction-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1000;
+}

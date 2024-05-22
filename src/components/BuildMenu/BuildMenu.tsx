@@ -1,17 +1,16 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import GridOnIcon from '@mui/icons-material/GridOn';
+import BusinessIcon from '@mui/icons-material/Business';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import FactoryIcon from '@mui/icons-material/Factory';
 import GridOffIcon from '@mui/icons-material/GridOff';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import HomeIcon from '@mui/icons-material/Home';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import HomeIcon from '@mui/icons-material/Home';
-import BusinessIcon from '@mui/icons-material/Business';
-import FactoryIcon from '@mui/icons-material/Factory';
-
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
 import React, { useState } from 'react';
 import './BuildMenu.css';
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 const BuildMenu = ({
   onToggleGridVisibility,
@@ -105,8 +104,8 @@ const BuildMenu = ({
 
   return (
     <>
-      <IconButton onClick={toggleDrawer(true)}>
-        <MenuIcon />
+      <IconButton onClick={toggleDrawer(true)} className="construction-menu">
+        <ConstructionIcon />
       </IconButton>
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         <BuildingContent />
