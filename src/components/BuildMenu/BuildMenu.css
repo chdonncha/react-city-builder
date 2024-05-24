@@ -2,3 +2,10 @@
     background-color: grey;
     color: white;
 }
+
+.construction-menu-button {
+    position: absolute !important;
+    z-index: 1000;
+    right: 0;
+    margin: 16px !important;
+}

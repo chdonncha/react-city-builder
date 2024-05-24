@@ -1,3 +1,14 @@
+import BusinessIcon from '@mui/icons-material/Business';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import FactoryIcon from '@mui/icons-material/Factory';
+import GridOffIcon from '@mui/icons-material/GridOff';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import HomeIcon from '@mui/icons-material/Home';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Fab } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
 import React, { useState } from 'react';
 import './BuildMenu.css';
 
@@ -11,86 +22,94 @@ const BuildMenu = ({
   onSelectIndustrial,
 }) => {
   const [selected, setSelected] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setIsDrawerOpen(open);
+  };
+
+  const BuildingContent = () => {
+    return (
+      <>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={onToggleGridVisibility}
+              selected={selected === 'grid'}
+              onMouseDown={() => setSelected('grid')}
+            >
+              <ListItemIcon>{showGrid ? <GridOffIcon /> : <GridOnIcon />}</ListItemIcon>
+              <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={onToggleAxesVisibility}
+              selected={selected === 'axes'}
+              onMouseDown={() => setSelected('axes')}
+            >
+              <ListItemIcon>{showAxes ? <VisibilityOffIcon /> : <VisibilityIcon />}</ListItemIcon>
+              <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
+            </ListItemButton>
+          </ListItem>
+          {['low', 'medium', 'high'].map((density) => (
+            <ListItem disablePadding key={`residential-${density}`}>
+              <ListItemButton
+                onClick={() => onSelectResidential(density)}
+                selected={selected === `${density}Residential`}
+                onMouseDown={() => setSelected(`${density}Residential`)}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Residential`} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+          {['low', 'medium', 'high'].map((density) => (
+            <ListItem disablePadding key={`commercial-${density}`}>
+              <ListItemButton
+                onClick={() => onSelectCommercial(density)}
+                selected={selected === `${density}Commercial`}
+                onMouseDown={() => setSelected(`${density}Commercial`)}
+              >
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Commercial`} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+          {['low', 'medium', 'high'].map((density) => (
+            <ListItem disablePadding key={`industrial-${density}`}>
+              <ListItemButton
+                onClick={() => onSelectIndustrial(density)}
+                selected={selected === `${density}Industrial`}
+                onMouseDown={() => setSelected(`${density}Industrial`)}
+              >
+                <ListItemIcon>
+                  <FactoryIcon />
+                </ListItemIcon>
+                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Industrial`} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </>
+    );
+  };
 
   return (
     <>
-      <button
-        onClick={onToggleGridVisibility}
-        className={selected === 'grid' ? 'selected' : ''}
-        onMouseDown={() => setSelected('grid')}
-      >
-        {showGrid ? 'Hide Grid' : 'Show Grid'}
-      </button>
-      <button
-        onClick={onToggleAxesVisibility}
-        className={selected === 'axes' ? 'selected' : ''}
-        onMouseDown={() => setSelected('axes')}
-      >
-        {showAxes ? 'Hide Axes' : 'Show Axes'}
-      </button>
-      <button
-        onClick={() => onSelectResidential('low')}
-        className={selected === 'lowResidential' ? 'selected' : ''}
-        onMouseDown={() => setSelected('lowResidential')}
-      >
-        Low Density Residential
-      </button>
-      <button
-        onClick={() => onSelectResidential('medium')}
-        className={selected === 'mediumResidential' ? 'selected' : ''}
-        onMouseDown={() => setSelected('mediumResidential')}
-      >
-        Medium Density Residential
-      </button>
-      <button
-        onClick={() => onSelectResidential('high')}
-        className={selected === 'highResidential' ? 'selected' : ''}
-        onMouseDown={() => setSelected('highResidential')}
-      >
-        High Density Residential
-      </button>
-      <button
-        onClick={() => onSelectCommercial('low')}
-        className={selected === 'lowCommercial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('lowCommercial')}
-      >
-        Low Density Commercial
-      </button>
-      <button
-        onClick={() => onSelectCommercial('medium')}
-        className={selected === 'mediumCommercial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('mediumCommercial')}
-      >
-        Medium Density Commercial
-      </button>
-      <button
-        onClick={() => onSelectCommercial('high')}
-        className={selected === 'highCommercial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('highCommercial')}
-      >
-        High Density Commercial
-      </button>
-      <button
-        onClick={() => onSelectIndustrial('low')}
-        className={selected === 'lowIndustrial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('lowIndustrial')}
-      >
-        Low Density Industrial
-      </button>
-      <button
-        onClick={() => onSelectIndustrial('medium')}
-        className={selected === 'mediumIndustrial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('mediumIndustrial')}
-      >
-        Medium Density Industrial
-      </button>
-      <button
-        onClick={() => onSelectIndustrial('high')}
-        className={selected === 'highIndustrial' ? 'selected' : ''}
-        onMouseDown={() => setSelected('highIndustrial')}
-      >
-        High Density Industrial
-      </button>
+      <Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>
+        <ConstructionIcon />
+      </Fab>
+      <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+        <BuildingContent />
+      </Drawer>
     </>
   );
 };
