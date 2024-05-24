@@ -104,7 +104,7 @@ const BuildMenu = ({
 
   return (
     <>
-      <IconButton onClick={toggleDrawer(true)} className="construction-menu">
+      <IconButton onClick={toggleDrawer(true)} className="construction-menu-button">
         <ConstructionIcon />
       </IconButton>
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
