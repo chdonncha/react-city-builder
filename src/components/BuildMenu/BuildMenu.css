@@ -4,10 +4,8 @@
 }
 
 .construction-menu-button {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    background-color: white;
-    border-radius: 50%;
+    position: absolute !important;
     z-index: 1000;
+    right: 0;
+    margin: 16px !important;
 }

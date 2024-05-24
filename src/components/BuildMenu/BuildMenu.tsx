@@ -7,8 +7,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Fab } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
 import React, { useState } from 'react';
 import './BuildMenu.css';
 
@@ -104,9 +104,9 @@ const BuildMenu = ({
 
   return (
     <>
-      <IconButton onClick={toggleDrawer(true)} className="construction-menu-button">
+      <Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>
         <ConstructionIcon />
-      </IconButton>
+      </Fab>
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         <BuildingContent />
       </Drawer>
