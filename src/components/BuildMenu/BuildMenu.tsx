@@ -153,6 +153,7 @@ const BuildMenu = ({
     );
   };
 
+
   const BuildingContent = () => {
     return (
       <>
