@@ -71,6 +71,8 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         return cell.density === 'low' ? 'lightblue' : cell.density === 'medium' ? 'blue' : 'darkblue';
       case 'industrial':
         return cell.density === 'low' ? 'wheat' : cell.density === 'medium' ? 'yellow' : 'goldenrod';
+      case 'road':
+        return 'dimgrey';
       default:
         return 'white';
     }
@@ -142,6 +144,10 @@ const RenderGrid = () => {
     setSelectedZone({ type, density });
   };
 
+  const handleSelectRoad = () => {
+    setSelectedZone({ type: 'road', density: null });
+  };
+
   return (
     <>
       <BuildMenu
@@ -150,6 +156,7 @@ const RenderGrid = () => {
         onSelectResidential={(density) => handleSelectZone('residential', density)}
         onSelectCommercial={(density) => handleSelectZone('commercial', density)}
         onSelectIndustrial={(density) => handleSelectZone('industrial', density)}
+        onSelectRoad={handleSelectRoad}
         showGrid={showGrid}
         showAxes={showAxes}
       />

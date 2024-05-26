@@ -1,3 +1,4 @@
+import AddRoadIcon from '@mui/icons-material/AddRoad';
 import BusinessIcon from '@mui/icons-material/Business';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import FactoryIcon from '@mui/icons-material/Factory';
@@ -20,6 +21,7 @@ const BuildMenu = ({
   onSelectResidential,
   onSelectCommercial,
   onSelectIndustrial,
+  onSelectRoad,
 }) => {
   const [selected, setSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -31,72 +33,136 @@ const BuildMenu = ({
     setIsDrawerOpen(open);
   };
 
+  const VisualOptions = () => {
+    return (
+      <>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              setSelected('grid');
+              onToggleGridVisibility();
+            }}
+            selected={selected === 'grid'}
+          >
+            <ListItemIcon>{showGrid ? <GridOnIcon /> : <GridOffIcon />}</ListItemIcon>
+            <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              setSelected('axes');
+              onToggleAxesVisibility();
+            }}
+            selected={selected === 'axes'}
+          >
+            <ListItemIcon>{showAxes ? <VisibilityIcon /> : <VisibilityOffIcon />}</ListItemIcon>
+            <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
+          </ListItemButton>
+        </ListItem>
+      </>
+    );
+  };
+
+  const InfrastructureOptions = () => {
+    return (
+      <>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              setSelected('road');
+              onSelectRoad();
+            }}
+            selected={selected === 'road'}
+          >
+            <ListItemIcon>
+              <AddRoadIcon />
+            </ListItemIcon>
+            <ListItemText primary="Road" />
+          </ListItemButton>
+        </ListItem>
+      </>
+    );
+  };
+
+  const ResidentialZoningOptions = () => {
+    return (
+      <>
+        {['low', 'medium', 'high'].map((density) => (
+          <ListItem disablePadding key={`residential-${density}`}>
+            <ListItemButton
+              onClick={() => {
+                setSelected(`${density}Residential`);
+                onSelectResidential(density);
+              }}
+              selected={selected === `${density}Residential`}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Residential`} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </>
+    );
+  };
+
+  const CommercialZoningOptions = () => {
+    return (
+      <>
+        {['low', 'medium', 'high'].map((density) => (
+          <ListItem disablePadding key={`commercial-${density}`}>
+            <ListItemButton
+              onClick={() => {
+                setSelected(`${density}Commercial`);
+                onSelectCommercial(density);
+              }}
+              selected={selected === `${density}Commercial`}
+            >
+              <ListItemIcon>
+                <BusinessIcon />
+              </ListItemIcon>
+              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Commercial`} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </>
+    );
+  };
+
+  const IndustrialZoningOptions = () => {
+    return (
+      <>
+        {['low', 'medium', 'high'].map((density) => (
+          <ListItem disablePadding key={`industrial-${density}`}>
+            <ListItemButton
+              onClick={() => {
+                setSelected(`${density}Industrial`);
+                onSelectIndustrial(density);
+              }}
+              selected={selected === `${density}Industrial`}
+            >
+              <ListItemIcon>
+                <FactoryIcon />
+              </ListItemIcon>
+              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Industrial`} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </>
+    );
+  };
+
   const BuildingContent = () => {
     return (
       <>
         <List>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={onToggleGridVisibility}
-              selected={selected === 'grid'}
-              onMouseDown={() => setSelected('grid')}
-            >
-              <ListItemIcon>{showGrid ? <GridOffIcon /> : <GridOnIcon />}</ListItemIcon>
-              <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={onToggleAxesVisibility}
-              selected={selected === 'axes'}
-              onMouseDown={() => setSelected('axes')}
-            >
-              <ListItemIcon>{showAxes ? <VisibilityOffIcon /> : <VisibilityIcon />}</ListItemIcon>
-              <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
-            </ListItemButton>
-          </ListItem>
-          {['low', 'medium', 'high'].map((density) => (
-            <ListItem disablePadding key={`residential-${density}`}>
-              <ListItemButton
-                onClick={() => onSelectResidential(density)}
-                selected={selected === `${density}Residential`}
-                onMouseDown={() => setSelected(`${density}Residential`)}
-              >
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Residential`} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-          {['low', 'medium', 'high'].map((density) => (
-            <ListItem disablePadding key={`commercial-${density}`}>
-              <ListItemButton
-                onClick={() => onSelectCommercial(density)}
-                selected={selected === `${density}Commercial`}
-                onMouseDown={() => setSelected(`${density}Commercial`)}
-              >
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Commercial`} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-          {['low', 'medium', 'high'].map((density) => (
-            <ListItem disablePadding key={`industrial-${density}`}>
-              <ListItemButton
-                onClick={() => onSelectIndustrial(density)}
-                selected={selected === `${density}Industrial`}
-                onMouseDown={() => setSelected(`${density}Industrial`)}
-              >
-                <ListItemIcon>
-                  <FactoryIcon />
-                </ListItemIcon>
-                <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Industrial`} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <VisualOptions></VisualOptions>
+          <InfrastructureOptions></InfrastructureOptions>
+          <ResidentialZoningOptions></ResidentialZoningOptions>
+          <CommercialZoningOptions></CommercialZoningOptions>
+          <IndustrialZoningOptions></IndustrialZoningOptions>
         </List>
       </>
     );
