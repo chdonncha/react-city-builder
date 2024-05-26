@@ -1,3 +1,4 @@
+import AddRoadIcon from '@mui/icons-material/AddRoad';
 import BusinessIcon from '@mui/icons-material/Business';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import FactoryIcon from '@mui/icons-material/Factory';
@@ -20,6 +21,7 @@ const BuildMenu = ({
   onSelectResidential,
   onSelectCommercial,
   onSelectIndustrial,
+  onSelectRoad,
 }) => {
   const [selected, setSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -52,6 +54,21 @@ const BuildMenu = ({
           >
             <ListItemIcon>{showAxes ? <VisibilityOffIcon /> : <VisibilityIcon />}</ListItemIcon>
             <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
+          </ListItemButton>
+        </ListItem>
+      </>
+    );
+  };
+
+  const InfrastructureOptions = () => {
+    return (
+      <>
+        <ListItem disablePadding>
+          <ListItemButton onClick={onSelectRoad} selected={selected === 'road'} onMouseDown={() => setSelected('road')}>
+            <ListItemIcon>
+              <AddRoadIcon />
+            </ListItemIcon>
+            <ListItemText primary="Road" />
           </ListItemButton>
         </ListItem>
       </>
@@ -126,6 +143,7 @@ const BuildMenu = ({
       <>
         <List>
           <VisualOptions></VisualOptions>
+          <InfrastructureOptions></InfrastructureOptions>
           <ResidentialZoningOptions></ResidentialZoningOptions>
           <CommercialZoningOptions></CommercialZoningOptions>
           <IndustrialZoningOptions></IndustrialZoningOptions>
