@@ -38,9 +38,11 @@ const BuildMenu = ({
       <>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={onToggleGridVisibility}
+            onClick={() => {
+              setSelected('grid');
+              onToggleGridVisibility();
+            }}
             selected={selected === 'grid'}
-            onMouseDown={() => setSelected('grid')}
           >
             <ListItemIcon>{showGrid ? <GridOffIcon /> : <GridOnIcon />}</ListItemIcon>
             <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
@@ -48,9 +50,11 @@ const BuildMenu = ({
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={onToggleAxesVisibility}
+            onClick={() => {
+              setSelected('axes');
+              onToggleAxesVisibility();
+            }}
             selected={selected === 'axes'}
-            onMouseDown={() => setSelected('axes')}
           >
             <ListItemIcon>{showAxes ? <VisibilityOffIcon /> : <VisibilityIcon />}</ListItemIcon>
             <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
@@ -59,12 +63,17 @@ const BuildMenu = ({
       </>
     );
   };
-
   const InfrastructureOptions = () => {
     return (
       <>
         <ListItem disablePadding>
-          <ListItemButton onClick={onSelectRoad} selected={selected === 'road'} onMouseDown={() => setSelected('road')}>
+          <ListItemButton
+            onClick={() => {
+              setSelected('road');
+              onSelectRoad();
+            }}
+            selected={selected === 'road'}
+          >
             <ListItemIcon>
               <AddRoadIcon />
             </ListItemIcon>
@@ -81,9 +90,11 @@ const BuildMenu = ({
         {['low', 'medium', 'high'].map((density) => (
           <ListItem disablePadding key={`residential-${density}`}>
             <ListItemButton
-              onClick={() => onSelectResidential(density)}
+              onClick={() => {
+                setSelected(`${density}Residential`);
+                onSelectResidential(density);
+              }}
               selected={selected === `${density}Residential`}
-              onMouseDown={() => setSelected(`${density}Residential`)}
             >
               <ListItemIcon>
                 <HomeIcon />
@@ -102,9 +113,11 @@ const BuildMenu = ({
         {['low', 'medium', 'high'].map((density) => (
           <ListItem disablePadding key={`commercial-${density}`}>
             <ListItemButton
-              onClick={() => onSelectCommercial(density)}
+              onClick={() => {
+                setSelected(`${density}Commercial`);
+                onSelectCommercial(density);
+              }}
               selected={selected === `${density}Commercial`}
-              onMouseDown={() => setSelected(`${density}Commercial`)}
             >
               <ListItemIcon>
                 <BusinessIcon />
@@ -123,9 +136,11 @@ const BuildMenu = ({
         {['low', 'medium', 'high'].map((density) => (
           <ListItem disablePadding key={`industrial-${density}`}>
             <ListItemButton
-              onClick={() => onSelectIndustrial(density)}
+              onClick={() => {
+                setSelected(`${density}Industrial`);
+                onSelectIndustrial(density);
+              }}
               selected={selected === `${density}Industrial`}
-              onMouseDown={() => setSelected(`${density}Industrial`)}
             >
               <ListItemIcon>
                 <FactoryIcon />
@@ -137,6 +152,7 @@ const BuildMenu = ({
       </>
     );
   };
+
 
   const BuildingContent = () => {
     return (
