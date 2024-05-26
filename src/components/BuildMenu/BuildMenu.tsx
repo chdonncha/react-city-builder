@@ -63,6 +63,7 @@ const BuildMenu = ({
       </>
     );
   };
+
   const InfrastructureOptions = () => {
     return (
       <>
@@ -152,7 +153,6 @@ const BuildMenu = ({
       </>
     );
   };
-
 
   const BuildingContent = () => {
     return (
