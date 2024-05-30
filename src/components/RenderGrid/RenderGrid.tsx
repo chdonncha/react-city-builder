@@ -170,7 +170,7 @@ const RenderGrid = () => {
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
         />
-        <OrbitControls />
+        <OrbitControls enableRotate={false} enableZoom={false} enablePan={false} />
       </Canvas>
     </>
   );
