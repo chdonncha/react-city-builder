@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 import './RenderGrid.css';
@@ -139,17 +139,27 @@ const RenderGrid = () => {
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);
-
   const handleSelectZone = (type: string, density: string) => {
     setSelectedZone({ type, density });
   };
-
   const handleSelectRoad = () => {
     setSelectedZone({ type: 'road', density: null });
+  };
+  const orbitControlsRef = useRef(null);
+
+  const rotateCamera = (angle: number) => {
+    const controls = orbitControlsRef.current;
+    if (controls) {
+      const rotation = new THREE.Euler(0, THREE.MathUtils.degToRad(angle), 0, 'XYZ');
+      controls.object.position.applyEuler(rotation);
+      controls.update();
+    }
   };
 
   return (
     <>
+      <button onClick={() => rotateCamera(90)}>Rotate +90°</button>
+      <button onClick={() => rotateCamera(-90)}>Rotate -90°</button>
       <BuildMenu
         onToggleGridVisibility={toggleGridVisibility}
         onToggleAxesVisibility={toggleAxesVisibility}
@@ -170,7 +180,7 @@ const RenderGrid = () => {
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
         />
-        <OrbitControls enableRotate={false} enableZoom={false} enablePan={false} />
+        <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={false} />
       </Canvas>
     </>
   );
