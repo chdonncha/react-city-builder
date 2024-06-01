@@ -8,3 +8,17 @@ canvas {
     height: 100vh !important;
     display: block;
 }
+
+.rotate-left-button {
+    position: absolute !important;
+    z-index: 1000;
+    right: 0;
+    margin: 90px 16px 0 0 !important;
+}
+
+.rotate-right-button {
+    position: absolute !important;
+    z-index: 1000;
+    right: 0;
+    margin: 160px 16px 0 0 !important;
+}

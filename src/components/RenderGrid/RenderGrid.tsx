@@ -1,7 +1,10 @@
+import { Fab } from '@mui/material';
 import { OrbitControls } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
 
 import './RenderGrid.css';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
@@ -50,12 +53,12 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         cells.map((cell) =>
           cell.x === x && cell.y === y
             ? {
-                ...cell,
-                type: selectedZone.type,
-                density: selectedZone.density,
-              }
-            : cell
-        )
+              ...cell,
+              type: selectedZone.type,
+              density: selectedZone.density,
+            }
+            : cell,
+        ),
       );
     } else {
       setCurrentSelected({ x, y });
@@ -101,12 +104,12 @@ interface GridAndAxesProps {
 }
 
 const GridAndAxes: React.FC<GridAndAxesProps> = ({
-  showGrid,
-  showAxes,
-  selectedZone,
-  currentSelected,
-  setCurrentSelected,
-}) => {
+                                                   showGrid,
+                                                   showAxes,
+                                                   selectedZone,
+                                                   currentSelected,
+                                                   setCurrentSelected,
+                                                 }) => {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -158,8 +161,12 @@ const RenderGrid = () => {
 
   return (
     <>
-      <button onClick={() => rotateCamera(90)}>Rotate +90°</button>
-      <button onClick={() => rotateCamera(-90)}>Rotate -90°</button>
+      <Fab onClick={() => rotateCamera(90)} className="rotate-left-button" sx={{ borderRadius: '50%' }}>
+        <RotateLeftIcon />
+      </Fab>
+      <Fab onClick={() => rotateCamera(-90)} className="rotate-right-button" sx={{ borderRadius: '50%' }}>
+        <RotateRightIcon />
+      </Fab>
       <BuildMenu
         onToggleGridVisibility={toggleGridVisibility}
         onToggleAxesVisibility={toggleAxesVisibility}
@@ -183,7 +190,7 @@ const RenderGrid = () => {
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={false} />
       </Canvas>
     </>
-  );
+);
 };
 
 export { RenderGrid };
