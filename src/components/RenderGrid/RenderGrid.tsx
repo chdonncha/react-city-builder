@@ -1,10 +1,10 @@
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
 import { Fab } from '@mui/material';
 import { OrbitControls } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import RotateRightIcon from '@mui/icons-material/RotateRight';
 
 import './RenderGrid.css';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
@@ -57,8 +57,8 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
               type: selectedZone.type,
               density: selectedZone.density,
             }
-            : cell,
-        ),
+            : cell
+        )
       );
     } else {
       setCurrentSelected({ x, y });
@@ -187,7 +187,7 @@ const RenderGrid = () => {
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
         />
-        <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={false} />
+        <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
       </Canvas>
     </>
 );
