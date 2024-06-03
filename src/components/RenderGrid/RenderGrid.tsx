@@ -5,7 +5,10 @@ import { OrbitControls } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import logo192 from './logo192.png';
+import residentialTexture from '../../textures/residential.png';
+import commercialTexture from '../../textures/commercial.png';
+import industrialTexture from '../../textures/industrial.png';
+import roadTexture from '../../textures/road.png';
 
 import './RenderGrid.css';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
@@ -43,7 +46,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     const initialCells = [];
     for (let x = -size / 2; x < size / 2; x += CELL_SIZE) {
       for (let y = -size / 2; y < size / 2; y += CELL_SIZE) {
-        initialCells.push({ x, y, type: null, density: null });
+        initialCells.push({ x, y, type: null, density: null, building: null });
       }
     }
     return initialCells;
@@ -58,6 +61,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
                 ...cell,
                 type: selectedZone.type,
                 density: selectedZone.density,
+                building: selectedZone.type,
               }
             : cell
         )
@@ -83,15 +87,39 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     }
   };
 
+  const getBuildingTexture = (type: any) => {
+    switch (type) {
+      case 'residential':
+        return residentialTexture;
+      case 'commercial':
+        return commercialTexture;
+      case 'industrial':
+        return industrialTexture;
+      case 'road':
+        return roadTexture;
+      default:
+        return null; // Default or unknown type
+    }
+  };
+
   return (
     <>
       {cells.map((cell) => (
-        <GridSquare
-          key={`${cell.x}-${cell.y}`}
-          position={[cell.x + CELL_SIZE / 2, 0, cell.y + CELL_SIZE / 2]}
-          onClick={() => handleCellClick(cell.x, cell.y)}
-          color={getColor(cell, currentSelected)}
-        />
+        <>
+          <GridSquare
+            key={`${cell.x}-${cell.y}`}
+            position={[cell.x + CELL_SIZE / 2, 0, cell.y + CELL_SIZE / 2]}
+            onClick={() => handleCellClick(cell.x, cell.y)}
+            color={getColor(cell, currentSelected)}
+          />
+          {cell.building && (
+            <CitySprite
+              imageUrl={getBuildingTexture(cell.building)}
+              position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
+              scale={4}
+            />
+          )}
+        </>
       ))}
     </>
   );
@@ -190,7 +218,6 @@ const RenderGrid = () => {
           setCurrentSelected={setCurrentSelected}
         />
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
-        <CitySprite imageUrl={logo192} position={[20, 1, 1]} scale={1} />
       </Canvas>
     </>
   );
