@@ -5,9 +5,11 @@ import { OrbitControls } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import logo192 from './logo192.png';
 
 import './RenderGrid.css';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
+import { CitySprite } from '../CitySprite/CitySprite';
 
 const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
@@ -53,10 +55,10 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         cells.map((cell) =>
           cell.x === x && cell.y === y
             ? {
-              ...cell,
-              type: selectedZone.type,
-              density: selectedZone.density,
-            }
+                ...cell,
+                type: selectedZone.type,
+                density: selectedZone.density,
+              }
             : cell
         )
       );
@@ -104,12 +106,12 @@ interface GridAndAxesProps {
 }
 
 const GridAndAxes: React.FC<GridAndAxesProps> = ({
-                                                   showGrid,
-                                                   showAxes,
-                                                   selectedZone,
-                                                   currentSelected,
-                                                   setCurrentSelected,
-                                                 }) => {
+  showGrid,
+  showAxes,
+  selectedZone,
+  currentSelected,
+  setCurrentSelected,
+}) => {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -188,9 +190,10 @@ const RenderGrid = () => {
           setCurrentSelected={setCurrentSelected}
         />
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
+        <CitySprite imageUrl={logo192} position={[20, 1, 1]} scale={1} />
       </Canvas>
     </>
-);
+  );
 };
 
 export { RenderGrid };
