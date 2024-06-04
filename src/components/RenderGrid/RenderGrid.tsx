@@ -117,6 +117,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
               scale={4}
+              isFlat={cell.building === 'road'}
             />
           )}
         </>
