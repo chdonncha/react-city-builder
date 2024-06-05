@@ -141,12 +141,18 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
   currentSelected,
   setCurrentSelected,
 }) => {
-  const { camera } = useThree();
+  const { camera, scene } = useThree();
 
   useEffect(() => {
-    camera.position.set(50, 50, 50);
-    camera.lookAt(0, 0, 0);
-  }, [camera]);
+    camera.position.set(100, 100 * Math.sqrt(2), 100);
+    camera.lookAt(scene.position);
+
+    camera.rotation.x = 22.5;
+    camera.rotation.y = 45;
+
+    camera.up.set(0, 1, 0);
+    camera.updateProjectionMatrix();
+  }, [camera, scene.position]);
 
   return (
     <>
@@ -218,8 +224,8 @@ const RenderGrid = () => {
         showAxes={showAxes}
       />
       <Canvas>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[100, 100, 100]} />
+        {/*<ambientLight intensity={0.5} />*/}
+        {/*<pointLight position={[100, 100, 100]} />*/}
         <GridAndAxes
           showGrid={showGrid}
           showAxes={showAxes}
