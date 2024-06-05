@@ -6,8 +6,8 @@ import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import residentialTexture from '../../textures/residential.png';
-import commercialTexture from '../../textures/commercial.png';
-import industrialTexture from '../../textures/industrial.png';
+import commercialTexture from '../../textures/residential.png';
+import industrialTexture from '../../textures/residential.png';
 import roadTexture from '../../textures/road.png';
 
 import './RenderGrid.css';
