@@ -181,11 +181,20 @@ const RenderGrid = () => {
   };
   const orbitControlsRef = useRef(null);
 
-  const rotateCamera = (angle: number) => {
+  const rotateCamera = (angleDegrees) => {
     const controls = orbitControlsRef.current;
     if (controls) {
-      const rotation = new THREE.Euler(0, THREE.MathUtils.degToRad(angle), 0, 'XYZ');
-      controls.object.position.applyEuler(rotation);
+      const offset = controls.object.position.clone().sub(controls.target);
+      const angleRadians = THREE.MathUtils.degToRad(angleDegrees);
+      const rotationMatrix = new THREE.Matrix4();
+
+      rotationMatrix.makeRotationY(angleRadians);
+      offset.applyMatrix4(rotationMatrix);
+
+      controls.object.position.copy(controls.target.clone().add(offset));
+      controls.object.lookAt(controls.target);
+      controls.object.up.set(0, 1, 0);
+
       controls.update();
     }
   };
