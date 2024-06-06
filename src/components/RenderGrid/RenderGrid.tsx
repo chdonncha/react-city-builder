@@ -1,7 +1,7 @@
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import { Fab } from '@mui/material';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -116,7 +116,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
             <CitySprite
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
-              scale={4}
+              scale={1}
               isFlat={cell.building === 'road'}
             />
           )}
@@ -141,18 +141,6 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
   currentSelected,
   setCurrentSelected,
 }) => {
-  const { camera, scene } = useThree();
-
-  useEffect(() => {
-    camera.position.set(100, 100 * Math.sqrt(2), 100);
-    camera.lookAt(scene.position);
-
-    camera.rotation.x = 22.5;
-    camera.rotation.y = 45;
-
-    camera.up.set(0, 1, 0);
-    camera.updateProjectionMatrix();
-  }, [camera, scene.position]);
 
   return (
     <>
@@ -186,6 +174,8 @@ const RenderGrid = () => {
     setSelectedZone({ type: 'road', density: null });
   };
   const orbitControlsRef = useRef(null);
+  // @ts-ignore
+  const cameraRef = useRef<THREE.OrthographicCamera>(null);
 
   const rotateCamera = (angleDegrees) => {
     const controls = orbitControlsRef.current;
@@ -224,6 +214,18 @@ const RenderGrid = () => {
         showAxes={showAxes}
       />
       <Canvas>
+        <OrthographicCamera
+          ref={cameraRef}
+          position={[100, 100, 100]}
+          left={-window.innerWidth / 2}
+          right={window.innerWidth / 2}
+          top={window.innerHeight / 2}
+          bottom={-window.innerHeight / 2}
+          near={-500}
+          far={500}
+          zoom={50}
+          makeDefault
+        />
         {/*<ambientLight intensity={0.5} />*/}
         {/*<pointLight position={[100, 100, 100]} />*/}
         <GridAndAxes
