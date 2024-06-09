@@ -118,6 +118,8 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
               scale={1}
               isFlat={cell.building === 'road'}
+              GRID_SIZE={GRID_SIZE}
+              GRID_DIVISIONS={GRID_DIVISIONS}
             />
           )}
         </>

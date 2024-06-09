@@ -7,17 +7,20 @@ interface CitySpriteProps {
   position: [number, number, number];
   scale: number;
   isFlat?: boolean;
+  GRID_SIZE: number;
+  GRID_DIVISIONS: number;
 }
 
-const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, isFlat = false }) => {
+const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, isFlat = false, GRID_SIZE, GRID_DIVISIONS }) => {
   const texture = useLoader(THREE.TextureLoader, imageUrl);
   const { scene } = useThree();
+  const CELL_SIZE = GRID_SIZE / GRID_DIVISIONS;
 
   useEffect(() => {
     let object3D;
     if (isFlat) {
       // Use PlaneGeometry for roads
-      const geometry = new THREE.PlaneGeometry(scale, scale);
+      const geometry = new THREE.PlaneGeometry(CELL_SIZE, CELL_SIZE);
       const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       object3D = new THREE.Mesh(geometry, material);
       object3D.rotation.x = -Math.PI / 2;
@@ -26,8 +29,8 @@ const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, isFl
       // Use Sprite for buildings
       const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
       object3D = new THREE.Sprite(spriteMaterial);
-      object3D.scale.set(scale, scale, 1);
-      object3D.position.set(...position);
+      object3D.scale.set(CELL_SIZE, CELL_SIZE, 1);
+      object3D.position.set(position[0], scale / 2, position[2]);
     }
     scene.add(object3D);
 
