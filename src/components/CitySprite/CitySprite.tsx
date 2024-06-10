@@ -30,7 +30,7 @@ const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, isFl
       const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
       object3D = new THREE.Sprite(spriteMaterial);
       object3D.scale.set(CELL_SIZE, CELL_SIZE, 1);
-      object3D.position.set(position[0], scale / 2, position[2]);
+      object3D.position.set(position[0], CELL_SIZE / 2, position[2]);
     }
     scene.add(object3D);
 
