@@ -108,7 +108,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         <>
           <GridSquare
             key={`${cell.x}-${cell.y}`}
-            position={[cell.x + CELL_SIZE / 2, 0, cell.y + CELL_SIZE / 2]}
+            position={[cell.x + CELL_SIZE / 2, -0.1, cell.y + CELL_SIZE / 2]}
             onClick={() => handleCellClick(cell.x, cell.y)}
             color={getColor(cell, currentSelected)}
           />
@@ -117,7 +117,6 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
               scale={1}
-              isFlat={cell.building === 'road'}
               GRID_SIZE={GRID_SIZE}
               GRID_DIVISIONS={GRID_DIVISIONS}
             />
@@ -218,11 +217,7 @@ const RenderGrid = () => {
       <Canvas>
         <OrthographicCamera
           ref={cameraRef}
-          position={[100, 100, 100]}
-          left={-window.innerWidth / 2}
-          right={window.innerWidth / 2}
-          top={window.innerHeight / 2}
-          bottom={-window.innerHeight / 2}
+          position={[0, 200, 0]}
           near={-500}
           far={500}
           zoom={50}
