@@ -2,9 +2,11 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import { Fab } from '@mui/material';
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
-import { Canvas, useThree } from '@react-three/fiber';
-import React, { useEffect, useRef, useState } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { ThreeEvent } from '@react-three/fiber';
+import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
+
 import residentialTexture from '../../textures/residential.png';
 import commercialTexture from '../../textures/residential.png';
 import industrialTexture from '../../textures/residential.png';
@@ -21,13 +23,21 @@ const CELL_SIZE = GRID_SIZE / GRID_DIVISIONS;
 interface GridSquareProps {
   position: number[];
   color: string;
-  onClick: () => void;
+  onMouseDown: (event: ThreeEvent<PointerEvent>) => void;
+  onMouseEnter: (event: ThreeEvent<PointerEvent>) => void;
+  onMouseUp: (event: ThreeEvent<PointerEvent>) => void;
   selected?: boolean;
 }
 
-const GridSquare: React.FC<GridSquareProps> = ({ position, color, onClick, selected }) => {
+const GridSquare: React.FC<GridSquareProps> = ({ position, color, onMouseDown, onMouseEnter, onMouseUp, selected }) => {
   return (
-    <mesh position={position as [number, number, number]} rotation={[-Math.PI / 2, 0, 0]} onClick={onClick}>
+    <mesh
+      position={position as [number, number, number]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      onPointerDown={onMouseDown}
+      onPointerEnter={onMouseEnter}
+      onPointerUp={onMouseUp}
+    >
       <planeGeometry args={[CELL_SIZE, CELL_SIZE]} />
       <meshBasicMaterial color={color} side={THREE.DoubleSide} />
     </mesh>
@@ -52,23 +62,52 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     return initialCells;
   });
 
-  const handleCellClick = (x, y) => {
-    if (selectedZone.type) {
-      setCells(
-        cells.map((cell) =>
-          cell.x === x && cell.y === y
-            ? {
-                ...cell,
-                type: selectedZone.type,
-                density: selectedZone.density,
-                building: selectedZone.type,
-              }
-            : cell
-        )
-      );
-    } else {
-      setCurrentSelected({ x, y });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [tempCells, setTempCells] = useState(cells);
+
+  const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
+    if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
+    setIsDragging(true);
+    setDragStart({ x, y });
+  };
+
+  const handleMouseEnter = (x: number, y: number) => {
+    if (isDragging && selectedZone.type) {
+      updateTempCells(x, y);
     }
+  };
+
+  const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
+    if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
+    if (isDragging && selectedZone.type) {
+      setCells(tempCells);
+    }
+    setIsDragging(false);
+    setDragStart(null);
+  };
+
+  const updateTempCells = (x: number, y: number) => {
+    if (!dragStart) return;
+
+    const xMin = Math.min(dragStart.x, x);
+    const xMax = Math.max(dragStart.x, x);
+    const yMin = Math.min(dragStart.y, y);
+    const yMax = Math.max(dragStart.y, y);
+
+    const newTempCells = cells.map((cell) => {
+      if (cell.x >= xMin && cell.x <= xMax && cell.y >= yMin && cell.y <= yMax) {
+        return {
+          ...cell,
+          type: selectedZone.type,
+          density: selectedZone.density,
+          building: selectedZone.type,
+        };
+      }
+      return cell;
+    });
+
+    setTempCells(newTempCells);
   };
 
   const getColor = (cell, currentSelected) => {
@@ -104,12 +143,13 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
 
   return (
     <>
-      {cells.map((cell) => (
-        <>
+      {tempCells.map((cell) => (
+        <React.Fragment key={`${cell.x}-${cell.y}`}>
           <GridSquare
-            key={`${cell.x}-${cell.y}`}
             position={[cell.x + CELL_SIZE / 2, -0.1, cell.y + CELL_SIZE / 2]}
-            onClick={() => handleCellClick(cell.x, cell.y)}
+            onMouseDown={(event) => handleMouseDown(cell.x, cell.y, event)}
+            onMouseEnter={() => handleMouseEnter(cell.x, cell.y)}
+            onMouseUp={handleMouseUp}
             color={getColor(cell, currentSelected)}
           />
           {cell.building && (
@@ -121,7 +161,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
               GRID_DIVISIONS={GRID_DIVISIONS}
             />
           )}
-        </>
+        </React.Fragment>
       ))}
     </>
   );
@@ -142,7 +182,6 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
   currentSelected,
   setCurrentSelected,
 }) => {
-
   return (
     <>
       {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']} />}
@@ -175,7 +214,6 @@ const RenderGrid = () => {
     setSelectedZone({ type: 'road', density: null });
   };
   const orbitControlsRef = useRef(null);
-  // @ts-ignore
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
 
   const rotateCamera = (angleDegrees) => {
@@ -215,14 +253,7 @@ const RenderGrid = () => {
         showAxes={showAxes}
       />
       <Canvas>
-        <OrthographicCamera
-          ref={cameraRef}
-          position={[0, 200, 0]}
-          near={-500}
-          far={500}
-          zoom={50}
-          makeDefault
-        />
+        <OrthographicCamera ref={cameraRef} position={[0, 200, 0]} near={-500} far={500} zoom={50} makeDefault />
         {/*<ambientLight intensity={0.5} />*/}
         {/*<pointLight position={[100, 100, 100]} />*/}
         <GridAndAxes
