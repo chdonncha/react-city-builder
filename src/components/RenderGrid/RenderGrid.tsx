@@ -1,13 +1,18 @@
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import { Fab } from '@mui/material';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import residentialTexture from '../../textures/residential.png';
+import commercialTexture from '../../textures/residential.png';
+import industrialTexture from '../../textures/residential.png';
+import roadTexture from '../../textures/road.png';
 
 import './RenderGrid.css';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
+import { CitySprite } from '../CitySprite/CitySprite';
 
 const GRID_SIZE = 200;
 const GRID_DIVISIONS = 50;
@@ -41,7 +46,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     const initialCells = [];
     for (let x = -size / 2; x < size / 2; x += CELL_SIZE) {
       for (let y = -size / 2; y < size / 2; y += CELL_SIZE) {
-        initialCells.push({ x, y, type: null, density: null });
+        initialCells.push({ x, y, type: null, density: null, building: null });
       }
     }
     return initialCells;
@@ -53,10 +58,11 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         cells.map((cell) =>
           cell.x === x && cell.y === y
             ? {
-              ...cell,
-              type: selectedZone.type,
-              density: selectedZone.density,
-            }
+                ...cell,
+                type: selectedZone.type,
+                density: selectedZone.density,
+                building: selectedZone.type,
+              }
             : cell
         )
       );
@@ -81,15 +87,41 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     }
   };
 
+  const getBuildingTexture = (type: any) => {
+    switch (type) {
+      case 'residential':
+        return residentialTexture;
+      case 'commercial':
+        return commercialTexture;
+      case 'industrial':
+        return industrialTexture;
+      case 'road':
+        return roadTexture;
+      default:
+        return null; // Default or unknown type
+    }
+  };
+
   return (
     <>
       {cells.map((cell) => (
-        <GridSquare
-          key={`${cell.x}-${cell.y}`}
-          position={[cell.x + CELL_SIZE / 2, 0, cell.y + CELL_SIZE / 2]}
-          onClick={() => handleCellClick(cell.x, cell.y)}
-          color={getColor(cell, currentSelected)}
-        />
+        <>
+          <GridSquare
+            key={`${cell.x}-${cell.y}`}
+            position={[cell.x + CELL_SIZE / 2, -0.1, cell.y + CELL_SIZE / 2]}
+            onClick={() => handleCellClick(cell.x, cell.y)}
+            color={getColor(cell, currentSelected)}
+          />
+          {cell.building && (
+            <CitySprite
+              imageUrl={getBuildingTexture(cell.building)}
+              position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
+              scale={1}
+              GRID_SIZE={GRID_SIZE}
+              GRID_DIVISIONS={GRID_DIVISIONS}
+            />
+          )}
+        </>
       ))}
     </>
   );
@@ -104,18 +136,12 @@ interface GridAndAxesProps {
 }
 
 const GridAndAxes: React.FC<GridAndAxesProps> = ({
-                                                   showGrid,
-                                                   showAxes,
-                                                   selectedZone,
-                                                   currentSelected,
-                                                   setCurrentSelected,
-                                                 }) => {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    camera.position.set(50, 50, 50);
-    camera.lookAt(0, 0, 0);
-  }, [camera]);
+  showGrid,
+  showAxes,
+  selectedZone,
+  currentSelected,
+  setCurrentSelected,
+}) => {
 
   return (
     <>
@@ -149,12 +175,23 @@ const RenderGrid = () => {
     setSelectedZone({ type: 'road', density: null });
   };
   const orbitControlsRef = useRef(null);
+  // @ts-ignore
+  const cameraRef = useRef<THREE.OrthographicCamera>(null);
 
-  const rotateCamera = (angle: number) => {
+  const rotateCamera = (angleDegrees) => {
     const controls = orbitControlsRef.current;
     if (controls) {
-      const rotation = new THREE.Euler(0, THREE.MathUtils.degToRad(angle), 0, 'XYZ');
-      controls.object.position.applyEuler(rotation);
+      const offset = controls.object.position.clone().sub(controls.target);
+      const angleRadians = THREE.MathUtils.degToRad(angleDegrees);
+      const rotationMatrix = new THREE.Matrix4();
+
+      rotationMatrix.makeRotationY(angleRadians);
+      offset.applyMatrix4(rotationMatrix);
+
+      controls.object.position.copy(controls.target.clone().add(offset));
+      controls.object.lookAt(controls.target);
+      controls.object.up.set(0, 1, 0);
+
       controls.update();
     }
   };
@@ -178,8 +215,16 @@ const RenderGrid = () => {
         showAxes={showAxes}
       />
       <Canvas>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[100, 100, 100]} />
+        <OrthographicCamera
+          ref={cameraRef}
+          position={[0, 200, 0]}
+          near={-500}
+          far={500}
+          zoom={50}
+          makeDefault
+        />
+        {/*<ambientLight intensity={0.5} />*/}
+        {/*<pointLight position={[100, 100, 100]} />*/}
         <GridAndAxes
           showGrid={showGrid}
           showAxes={showAxes}
@@ -190,7 +235,7 @@ const RenderGrid = () => {
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
       </Canvas>
     </>
-);
+  );
 };
 
 export { RenderGrid };
