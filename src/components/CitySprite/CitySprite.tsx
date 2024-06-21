@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { useLoader, useThree } from '@react-three/fiber';
+import React, { useEffect } from 'react';
 import * as THREE from 'three';
 
 interface CitySpriteProps {
@@ -22,7 +22,7 @@ const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, GRID
       map: texture,
       side: THREE.DoubleSide,
       transparent: true,
-      alphaTest: 0.5 // enable semi-transparency
+      alphaTest: 0.5, // enable semi-transparency
     });
 
     const object3D = new THREE.Mesh(geometry, material);
