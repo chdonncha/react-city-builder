@@ -65,11 +65,13 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<{ x: number, y: number } | null>(null);
   const [tempCells, setTempCells] = useState(cells);
+  const [draggedCells, setDraggedCells] = useState<{ x: number, y: number }[]>([]);
 
   const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     setIsDragging(true);
     setDragStart({ x, y });
+    setDraggedCells([]);
   };
 
   const handleMouseEnter = (x: number, y: number) => {
@@ -85,6 +87,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     }
     setIsDragging(false);
     setDragStart(null);
+    setDraggedCells([]);
   };
 
   const updateTempCells = (x: number, y: number) => {
@@ -95,12 +98,15 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     const yMin = Math.min(dragStart.y, y);
     const yMax = Math.max(dragStart.y, y);
 
+    const newDraggedCells: { x: number, y: number }[] = [];
+
     const newTempCells = cells.map(cell => {
       if (selectedZone.type === 'road') {
         // Allow roads only in straight lines
         if (dragStart.x === x) {
           // Vertical line
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
+            newDraggedCells.push({ x: cell.x, y: cell.y });
             return {
               ...cell,
               type: selectedZone.type,
@@ -111,6 +117,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
         } else if (dragStart.y === y) {
           // Horizontal line
           if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
+            newDraggedCells.push({ x: cell.x, y: cell.y });
             return {
               ...cell,
               type: selectedZone.type,
@@ -120,6 +127,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
           }
         }
       } else if (cell.x >= xMin && cell.x <= xMax && cell.y >= yMin && cell.y <= yMax) {
+        newDraggedCells.push({ x: cell.x, y: cell.y });
         return {
           ...cell,
           type: selectedZone.type,
@@ -131,6 +139,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     });
 
     setTempCells(newTempCells);
+    setDraggedCells(newDraggedCells);
   };
 
   const getColor = (cell, currentSelected) => {
@@ -164,6 +173,10 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     }
   };
 
+  const isDraggedCell = (x: number, y: number) => {
+    return draggedCells.some(cell => cell.x === x && cell.y === y);
+  };
+
   return (
     <>
       {tempCells.map((cell) => (
@@ -175,7 +188,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
             onMouseUp={handleMouseUp}
             color={getColor(cell, currentSelected)}
           />
-          {cell.building && (
+          {(!isDraggedCell(cell.x, cell.y)) && cell.building && (
             <CitySprite
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
