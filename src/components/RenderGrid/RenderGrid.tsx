@@ -63,7 +63,7 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
   });
 
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [dragStart, setDragStart] = useState<{ x: number, y: number } | null>(null);
   const [tempCells, setTempCells] = useState(cells);
 
   const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
@@ -95,8 +95,31 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCur
     const yMin = Math.min(dragStart.y, y);
     const yMax = Math.max(dragStart.y, y);
 
-    const newTempCells = cells.map((cell) => {
-      if (cell.x >= xMin && cell.x <= xMax && cell.y >= yMin && cell.y <= yMax) {
+    const newTempCells = cells.map(cell => {
+      if (selectedZone.type === 'road') {
+        // Allow roads only in straight lines
+        if (dragStart.x === x) {
+          // Vertical line
+          if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
+            return {
+              ...cell,
+              type: selectedZone.type,
+              density: selectedZone.density,
+              building: selectedZone.type,
+            };
+          }
+        } else if (dragStart.y === y) {
+          // Horizontal line
+          if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
+            return {
+              ...cell,
+              type: selectedZone.type,
+              density: selectedZone.density,
+              building: selectedZone.type,
+            };
+          }
+        }
+      } else if (cell.x >= xMin && cell.x <= xMax && cell.y >= yMin && cell.y <= yMax) {
         return {
           ...cell,
           type: selectedZone.type,
