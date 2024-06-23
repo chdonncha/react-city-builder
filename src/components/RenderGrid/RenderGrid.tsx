@@ -29,7 +29,7 @@ interface GridSquareProps {
   selected?: boolean;
 }
 
-const GridSquare: React.FC<GridSquareProps> = ({ position, color, onMouseDown, onMouseEnter, onMouseUp, selected }) => {
+const GridSquare: React.FC<GridSquareProps> = ({ position, color, onMouseDown, onMouseEnter, onMouseUp }) => {
   return (
     <mesh
       position={position as [number, number, number]}
@@ -51,7 +51,7 @@ interface GridProps {
   setCurrentSelected: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
 }
 
-const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCurrentSelected }) => {
+const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected }) => {
   const [cells, setCells] = useState(() => {
     const initialCells = [];
     for (let x = -size / 2; x < size / 2; x += CELL_SIZE) {
