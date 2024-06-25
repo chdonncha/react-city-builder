@@ -1,8 +1,9 @@
 name: Build and Deploy
-on:
-  push:
-    branches:
-      - master
+on: [push] # Will use gh-pages branch as default
+# on:
+#  push:
+#    branches:
+#      - master
 permissions:
   contents: write
 jobs:
