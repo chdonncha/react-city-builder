@@ -1,10 +1,13 @@
 name: Build and Deploy
-on: [push] # Will use gh-pages branch as default
+on:
+  push:
+    branches:
+      - main
 permissions:
   contents: write
 jobs:
   build-and-deploy:
-    concurrency: ci-${{ github.ref }}
+    # concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -14,6 +17,7 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm run deploy
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
