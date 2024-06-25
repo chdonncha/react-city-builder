@@ -1,5 +1,6 @@
 import AddRoadIcon from '@mui/icons-material/AddRoad';
 import BusinessIcon from '@mui/icons-material/Business';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import FactoryIcon from '@mui/icons-material/Factory';
 import GridOffIcon from '@mui/icons-material/GridOff';
 import GridOnIcon from '@mui/icons-material/GridOn';
@@ -7,6 +8,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Fab } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import React, { useState } from 'react';
 import './BuildMenu.css';
@@ -168,9 +170,9 @@ const BuildMenu = ({
 
   return (
     <>
-      {/*<Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>*/}
-      {/*  <ConstructionIcon />*/}
-      {/*</Fab>*/}
+      <Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>
+        <ConstructionIcon />
+      </Fab>
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         <BuildingContent />
       </Drawer>
