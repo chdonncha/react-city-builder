@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/react-city-builder/static/css/main.5e7fca10.css",
-    "main.js": "/react-city-builder/static/js/main.a0aa41b2.js",
+    "main.css": "/react-city-builder/static/css/main.0b388325.css",
+    "main.js": "/react-city-builder/static/js/main.6f800615.js",
     "static/js/453.97f24443.chunk.js": "/react-city-builder/static/js/453.97f24443.chunk.js",
+    "static/media/residential.png": "/react-city-builder/static/media/residential.3925183ec365d50d78e7.png",
+    "static/media/road.png": "/react-city-builder/static/media/road.89e8686b4868ca5baf3c.png",
     "index.html": "/react-city-builder/index.html",
-    "main.5e7fca10.css.map": "/react-city-builder/static/css/main.5e7fca10.css.map",
-    "main.a0aa41b2.js.map": "/react-city-builder/static/js/main.a0aa41b2.js.map",
+    "main.0b388325.css.map": "/react-city-builder/static/css/main.0b388325.css.map",
+    "main.6f800615.js.map": "/react-city-builder/static/js/main.6f800615.js.map",
     "453.97f24443.chunk.js.map": "/react-city-builder/static/js/453.97f24443.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5e7fca10.css",
-    "static/js/main.a0aa41b2.js"
+    "static/css/main.0b388325.css",
+    "static/js/main.6f800615.js"
   ]
 }
