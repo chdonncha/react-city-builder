@@ -170,9 +170,9 @@ const BuildMenu = ({
 
   return (
     <>
-      <Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>
-        <ConstructionIcon />
-      </Fab>
+      {/*<Fab onClick={toggleDrawer(true)} className="construction-menu-button" sx={{ borderRadius: '50%' }}>*/}
+      {/*  <ConstructionIcon />*/}
+      {/*</Fab>*/}
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         <BuildingContent />
       </Drawer>
