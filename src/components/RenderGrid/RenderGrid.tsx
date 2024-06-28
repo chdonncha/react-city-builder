@@ -1,7 +1,6 @@
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React, { useRef, useState } from 'react';
-
 import * as THREE from 'three';
 
 import { BuildMenu } from '../BuildMenu/BuildMenu';
@@ -9,6 +8,22 @@ import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
 
 const RenderGrid: React.FC = () => {
+  const GRID_SIZE = 200;
+  const GRID_DIVISIONS = 50;
+  const TILE_SIZE = GRID_SIZE / GRID_DIVISIONS;
+
+  const generateRandomMap = (size) => {
+    const map = [];
+    for (let i = 0; i < size; i++) {
+      const row = [];
+      for (let j = 0; j < size; j++) {
+        row.push(Math.random() < 0.5 ? 'grass' : 'water');
+      }
+      map.push(row);
+    }
+    return map;
+  };
+
   const [showGrid, setShowGrid] = useState(true);
   const [showAxes, setShowAxes] = useState(true);
   const [selectedZone, setSelectedZone] = useState<{ type: string | null; density: string | null }>({
@@ -16,6 +31,7 @@ const RenderGrid: React.FC = () => {
     density: null,
   });
   const [currentSelected, setCurrentSelected] = useState<{ x: number; y: number } | null>(null);
+  const [map, setMap] = useState(generateRandomMap(GRID_DIVISIONS));
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);
@@ -61,6 +77,7 @@ const RenderGrid: React.FC = () => {
           selectedZone={selectedZone}
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
+          map={map}
         />
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
       </Canvas>

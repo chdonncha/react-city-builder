@@ -1,5 +1,5 @@
 import { ThreeEvent } from '@react-three/fiber';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { GridSquare } from './GridSquare';
 
@@ -19,14 +19,21 @@ interface GridProps {
   selectedZone: { type: string | null; density: string | null };
   currentSelected: { x: number; y: number } | null;
   setCurrentSelected: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
+  map: string[][]; // Add map as a prop
 }
 
-const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected }) => {
+const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCurrentSelected, map }) => {
   const [cells, setCells] = useState(() => {
     const initialCells = [];
-    for (let x = -size / 2; x < size / 2; x += CELL_SIZE) {
-      for (let y = -size / 2; y < size / 2; y += CELL_SIZE) {
-        initialCells.push({ x, y, type: null, density: null, building: null });
+    for (let i = 0; i < GRID_DIVISIONS; i++) {
+      for (let j = 0; j < GRID_DIVISIONS; j++) {
+        initialCells.push({
+          x: j * CELL_SIZE - GRID_SIZE / 2,
+          y: i * CELL_SIZE - GRID_SIZE / 2,
+          type: map[i][j] === 'grass' ? 'grass' : 'water',
+          density: null,
+          building: null,
+        });
       }
     }
     return initialCells;
@@ -123,6 +130,10 @@ const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected }) => {
         return cell.density === 'low' ? 'wheat' : cell.density === 'medium' ? 'yellow' : 'goldenrod';
       case 'road':
         return 'dimgrey';
+      case 'water':
+        return 'blue';
+      case 'grass':
+        return 'green';
       default:
         return 'white';
     }
