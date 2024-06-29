@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
 
+import { generateRandomMap } from '../../utils/mapUtils'; // Adjust the path based on your actual folder structure
 import { BuildMenu } from '../BuildMenu/BuildMenu';
 import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
@@ -11,18 +12,6 @@ const RenderGrid: React.FC = () => {
   const GRID_SIZE = 200;
   const GRID_DIVISIONS = 50;
   const TILE_SIZE = GRID_SIZE / GRID_DIVISIONS;
-
-  const generateRandomMap = (size) => {
-    const map = [];
-    for (let i = 0; i < size; i++) {
-      const row = [];
-      for (let j = 0; j < size; j++) {
-        row.push(Math.random() < 0.5 ? 'grass' : 'water');
-      }
-      map.push(row);
-    }
-    return map;
-  };
 
   const [showGrid, setShowGrid] = useState(true);
   const [showAxes, setShowAxes] = useState(true);
