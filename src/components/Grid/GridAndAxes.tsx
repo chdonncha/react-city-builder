@@ -24,7 +24,7 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
                                                  }) => {
   return (
     <>
-      {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS, 'red', 'gray']} />}
+      {showGrid && <gridHelper args={[GRID_SIZE, GRID_DIVISIONS]} />}
       {showAxes && <axesHelper args={[100]} />}
       <Grid
         size={GRID_SIZE}
