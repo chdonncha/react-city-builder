@@ -9,9 +9,7 @@ import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
 
 const RenderGrid: React.FC = () => {
-  const GRID_SIZE = 200;
   const GRID_DIVISIONS = 50;
-  const TILE_SIZE = GRID_SIZE / GRID_DIVISIONS;
 
   const [showGrid, setShowGrid] = useState(true);
   const [showAxes, setShowAxes] = useState(false);
@@ -20,7 +18,7 @@ const RenderGrid: React.FC = () => {
     density: null,
   });
   const [currentSelected, setCurrentSelected] = useState<{ x: number; y: number } | null>(null);
-  const [map, setMap] = useState(generateRandomMap(GRID_DIVISIONS));
+  const [map] = useState(generateRandomMap(GRID_DIVISIONS));
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);

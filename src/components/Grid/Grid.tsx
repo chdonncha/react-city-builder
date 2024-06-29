@@ -1,5 +1,5 @@
 import { ThreeEvent } from '@react-three/fiber';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { GridSquare } from './GridSquare';
 
@@ -22,7 +22,7 @@ interface GridProps {
   map: string[][]; // Add map as a prop
 }
 
-const Grid: React.FC<GridProps> = ({ size, selectedZone, currentSelected, setCurrentSelected, map }) => {
+const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
   const [cells, setCells] = useState(() => {
     const initialCells = [];
     for (let i = 0; i < GRID_DIVISIONS; i++) {
