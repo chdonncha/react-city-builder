@@ -1,21 +1,24 @@
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React, { useRef, useState } from 'react';
-
 import * as THREE from 'three';
 
+import { generateRandomMap } from '../../utils/mapUtils'; // Adjust the path based on your actual folder structure
 import { BuildMenu } from '../BuildMenu/BuildMenu';
 import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
 
 const RenderGrid: React.FC = () => {
+  const GRID_DIVISIONS = 50;
+
   const [showGrid, setShowGrid] = useState(true);
-  const [showAxes, setShowAxes] = useState(true);
+  const [showAxes, setShowAxes] = useState(false);
   const [selectedZone, setSelectedZone] = useState<{ type: string | null; density: string | null }>({
     type: null,
     density: null,
   });
   const [currentSelected, setCurrentSelected] = useState<{ x: number; y: number } | null>(null);
+  const [map] = useState(generateRandomMap(GRID_DIVISIONS));
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);
@@ -61,6 +64,7 @@ const RenderGrid: React.FC = () => {
           selectedZone={selectedZone}
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
+          map={map}
         />
         <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
       </Canvas>
