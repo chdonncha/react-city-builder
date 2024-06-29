@@ -14,7 +14,7 @@ const RenderGrid: React.FC = () => {
   const TILE_SIZE = GRID_SIZE / GRID_DIVISIONS;
 
   const [showGrid, setShowGrid] = useState(true);
-  const [showAxes, setShowAxes] = useState(true);
+  const [showAxes, setShowAxes] = useState(false);
   const [selectedZone, setSelectedZone] = useState<{ type: string | null; density: string | null }>({
     type: null,
     density: null,
