@@ -7,6 +7,7 @@ import { generateRandomMap } from '../../utils/mapUtils'; // Adjust the path bas
 import { BuildMenu } from '../BuildMenu/BuildMenu';
 import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
+import { ShowGridButton } from '../ShowGridButton/ShowGridButton';
 
 const RenderGrid: React.FC = () => {
   const GRID_DIVISIONS = 50;
@@ -45,6 +46,7 @@ const RenderGrid: React.FC = () => {
 
   return (
     <>
+      <ShowGridButton onToggleGridVisibility={toggleGridVisibility} showGrid={showGrid} />
       <RotateButtons rotateCamera={rotateCamera} />
       <BuildMenu
         onToggleGridVisibility={toggleGridVisibility}
