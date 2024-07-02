@@ -133,7 +133,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
       case 'water':
         return 'blue';
       case 'grass':
-        return 'green';
+        return 'lime';
       default:
         return 'white';
     }
