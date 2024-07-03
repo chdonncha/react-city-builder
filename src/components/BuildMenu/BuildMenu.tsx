@@ -1,10 +1,7 @@
-import AddRoadIcon from '@mui/icons-material/AddRoad';
-import BusinessIcon from '@mui/icons-material/Business';
+import AddRoadIcon from '@mui/icons-material/AddRoad'; // TODO: Replace with suitable conveyor replacement
 import ConstructionIcon from '@mui/icons-material/Construction';
-import FactoryIcon from '@mui/icons-material/Factory';
 import GridOffIcon from '@mui/icons-material/GridOff';
 import GridOnIcon from '@mui/icons-material/GridOn';
-import HomeIcon from '@mui/icons-material/Home';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
@@ -14,15 +11,14 @@ import React, { useState } from 'react';
 import './BuildMenu.css';
 
 const BuildMenu = ({
-  onToggleGridVisibility,
-  onToggleAxesVisibility,
-  showGrid,
-  showAxes,
-  onSelectResidential,
-  onSelectCommercial,
-  onSelectIndustrial,
-  onSelectRoad,
-}) => {
+                     onToggleGridVisibility,
+                     onToggleAxesVisibility,
+                     showGrid,
+                     showAxes,
+                     onSelectAssembler,
+                     onSelectExcavator,
+                     onSelectConveyor,
+                   }) => {
   const [selected, setSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -33,140 +29,104 @@ const BuildMenu = ({
     setIsDrawerOpen(open);
   };
 
-  const VisualOptions = () => {
-    return (
-      <>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              setSelected('grid');
-              onToggleGridVisibility();
-            }}
-            selected={selected === 'grid'}
-          >
-            <ListItemIcon>{showGrid ? <GridOnIcon /> : <GridOffIcon />}</ListItemIcon>
-            <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              setSelected('axes');
-              onToggleAxesVisibility();
-            }}
-            selected={selected === 'axes'}
-          >
-            <ListItemIcon>{showAxes ? <VisibilityIcon /> : <VisibilityOffIcon />}</ListItemIcon>
-            <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
-          </ListItemButton>
-        </ListItem>
-      </>
-    );
-  };
+  const VisualOptions = () => (
+    <>
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            setSelected('grid');
+            onToggleGridVisibility();
+          }}
+          selected={selected === 'grid'}
+        >
+          <ListItemIcon>{showGrid ? <GridOnIcon /> : <GridOffIcon />}</ListItemIcon>
+          <ListItemText primary={showGrid ? 'Hide Grid' : 'Show Grid'} />
+        </ListItemButton>
+      </ListItem>
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            setSelected('axes');
+            onToggleAxesVisibility();
+          }}
+          selected={selected === 'axes'}
+        >
+          <ListItemIcon>{showAxes ? <VisibilityIcon /> : <VisibilityOffIcon />}</ListItemIcon>
+          <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
+        </ListItemButton>
+      </ListItem>
+    </>
+  );
 
-  const InfrastructureOptions = () => {
-    return (
-      <>
-        <ListItem disablePadding>
+  const InfrastructureOptions = () => (
+    <>
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            setSelected('conveyor');
+            onSelectConveyor();
+          }}
+          selected={selected === 'conveyor'}
+        >
+          <ListItemIcon>
+            <AddRoadIcon /> {/* TODO: Replace with a suitable conveyor icon if available */}
+          </ListItemIcon>
+          <ListItemText primary="Conveyor" />
+        </ListItemButton>
+      </ListItem>
+    </>
+  );
+
+  const AssemblerOptions = () => (
+    <>
+      {[1, 2, 3].map((level) => (
+        <ListItem disablePadding key={`assembler-${level}`}>
           <ListItemButton
             onClick={() => {
-              setSelected('road');
-              onSelectRoad();
+              setSelected(`assembler${level}`);
+              onSelectAssembler(level);
             }}
-            selected={selected === 'road'}
+            selected={selected === `assembler${level}`}
           >
             <ListItemIcon>
-              <AddRoadIcon />
+              <ConstructionIcon /> {/* TODO: Replace with a suitable assembler icon if available */}
             </ListItemIcon>
-            <ListItemText primary="Road" />
+            <ListItemText primary={`Assembler Level ${level}`} />
           </ListItemButton>
         </ListItem>
-      </>
-    );
-  };
+      ))}
+    </>
+  );
 
-  const ResidentialZoningOptions = () => {
-    return (
-      <>
-        {['low', 'medium', 'high'].map((density) => (
-          <ListItem disablePadding key={`residential-${density}`}>
-            <ListItemButton
-              onClick={() => {
-                setSelected(`${density}Residential`);
-                onSelectResidential(density);
-              }}
-              selected={selected === `${density}Residential`}
-            >
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Residential`} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </>
-    );
-  };
+  const ExcavatorOptions = () => (
+    <>
+      {[1, 2, 3].map((level) => (
+        <ListItem disablePadding key={`excavator-${level}`}>
+          <ListItemButton
+            onClick={() => {
+              setSelected(`excavator${level}`);
+              onSelectExcavator(level);
+            }}
+            selected={selected === `excavator${level}`}
+          >
+            <ListItemIcon>
+              <ConstructionIcon /> {/* TODO: Replace with a suitable excavator icon if available */}
+            </ListItemIcon>
+            <ListItemText primary={`Excavator Level ${level}`} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </>
+  );
 
-  const CommercialZoningOptions = () => {
-    return (
-      <>
-        {['low', 'medium', 'high'].map((density) => (
-          <ListItem disablePadding key={`commercial-${density}`}>
-            <ListItemButton
-              onClick={() => {
-                setSelected(`${density}Commercial`);
-                onSelectCommercial(density);
-              }}
-              selected={selected === `${density}Commercial`}
-            >
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Commercial`} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </>
-    );
-  };
-
-  const IndustrialZoningOptions = () => {
-    return (
-      <>
-        {['low', 'medium', 'high'].map((density) => (
-          <ListItem disablePadding key={`industrial-${density}`}>
-            <ListItemButton
-              onClick={() => {
-                setSelected(`${density}Industrial`);
-                onSelectIndustrial(density);
-              }}
-              selected={selected === `${density}Industrial`}
-            >
-              <ListItemIcon>
-                <FactoryIcon />
-              </ListItemIcon>
-              <ListItemText primary={`${density.charAt(0).toUpperCase() + density.slice(1)} Density Industrial`} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </>
-    );
-  };
-
-  const BuildingContent = () => {
-    return (
-      <>
-        <List>
-          <VisualOptions></VisualOptions>
-          <InfrastructureOptions></InfrastructureOptions>
-          <ResidentialZoningOptions></ResidentialZoningOptions>
-          <CommercialZoningOptions></CommercialZoningOptions>
-          <IndustrialZoningOptions></IndustrialZoningOptions>
-        </List>
-      </>
-    );
-  };
+  const BuildingContent = () => (
+    <List>
+      <VisualOptions />
+      <InfrastructureOptions />
+      <AssemblerOptions />
+      <ExcavatorOptions />
+    </List>
+  );
 
   return (
     <>

@@ -23,8 +23,9 @@ const RenderGrid: React.FC = () => {
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);
-  const handleSelectZone = (type: string, density: string) => setSelectedZone({ type, density });
-  const handleSelectRoad = () => setSelectedZone({ type: 'road', density: null });
+  const handleSelectAssembler = (level: number) => setSelectedZone({ type: `assembler${level}`, density: null });
+  const handleSelectExcavator = (level: number) => setSelectedZone({ type: `excavator${level}`, density: null });
+  const handleSelectConveyor = () => setSelectedZone({ type: 'conveyor', density: null });
 
   const orbitControlsRef = useRef(null);
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
@@ -51,10 +52,9 @@ const RenderGrid: React.FC = () => {
       <BuildMenu
         onToggleGridVisibility={toggleGridVisibility}
         onToggleAxesVisibility={toggleAxesVisibility}
-        onSelectResidential={(density) => handleSelectZone('residential', density)}
-        onSelectCommercial={(density) => handleSelectZone('commercial', density)}
-        onSelectIndustrial={(density) => handleSelectZone('industrial', density)}
-        onSelectRoad={handleSelectRoad}
+        onSelectAssembler={handleSelectAssembler}
+        onSelectExcavator={handleSelectExcavator}
+        onSelectConveyor={handleSelectConveyor}
         showGrid={showGrid}
         showAxes={showAxes}
       />
