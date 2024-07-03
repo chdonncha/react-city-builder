@@ -59,7 +59,14 @@ const RenderGrid: React.FC = () => {
         showAxes={showAxes}
       />
       <Canvas>
-        <OrthographicCamera ref={cameraRef} position={[0, 200, 0]} near={-500} far={500} zoom={50} makeDefault />
+        <OrthographicCamera
+          ref={cameraRef}
+          position={[0, 200, 0]}
+          near={-500}
+          far={500}
+          zoom={50}
+          makeDefault
+        />
         <GridAndAxes
           showGrid={showGrid}
           showAxes={showAxes}
@@ -68,7 +75,14 @@ const RenderGrid: React.FC = () => {
           setCurrentSelected={setCurrentSelected}
           map={map}
         />
-        <OrbitControls ref={orbitControlsRef} enableRotate={false} enableZoom={true} enablePan={true} />
+        <OrbitControls
+          ref={orbitControlsRef}
+          enableRotate={false}
+          enableZoom={true}
+          enablePan={true}
+          minZoom={8}
+          maxZoom={40}
+        />
       </Canvas>
     </>
   );
