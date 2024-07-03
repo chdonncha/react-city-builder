@@ -3,10 +3,13 @@ import React, { useState } from 'react';
 
 import { GridSquare } from './GridSquare';
 
-import commercialTexture from '../../textures/residential.png';
-import industrialTexture from '../../textures/residential.png';
-import residentialTexture from '../../textures/residential.png';
-import roadTexture from '../../textures/road.png';
+import assembler2Texture from '../../textures/assembler.png';
+import assembler3Texture from '../../textures/assembler.png';
+import assembler1Texture from '../../textures/assembler.png';
+import conveyorTexture from '../../textures/conveyor.png';
+import excavator2Texture from '../../textures/excavator.png';
+import excavator3Texture from '../../textures/excavator.png';
+import excavator1Texture from '../../textures/excavator.png';
 import { CitySprite } from '../CitySprite/CitySprite';
 import './Grid.css';
 
@@ -78,8 +81,8 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     const newDraggedCells: { x: number, y: number }[] = [];
 
     const newTempCells = cells.map(cell => {
-      if (selectedZone.type === 'road') {
-        // Allow roads only in straight lines
+      if (selectedZone.type === 'conveyor') {
+        // Allow conveyors only in straight lines
         if (dragStart.x === x) {
           // Vertical line
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
@@ -122,13 +125,15 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
   const getColor = (cell, currentSelected) => {
     if (currentSelected && cell.x === currentSelected.x && cell.y === currentSelected.y) return 'lightgrey';
     switch (cell.type) {
-      case 'residential':
-        return cell.density === 'low' ? 'lightgreen' : cell.density === 'medium' ? 'green' : 'darkgreen';
-      case 'commercial':
-        return cell.density === 'low' ? 'lightblue' : cell.density === 'medium' ? 'blue' : 'darkblue';
-      case 'industrial':
-        return cell.density === 'low' ? 'wheat' : cell.density === 'medium' ? 'yellow' : 'goldenrod';
-      case 'road':
+      case 'assembler1':
+      case 'assembler2':
+      case 'assembler3':
+        return 'lightgreen';
+      case 'excavator1':
+      case 'excavator2':
+      case 'excavator3':
+        return 'yellow';
+      case 'conveyor':
         return 'dimgrey';
       case 'water':
         return 'blue';
@@ -141,15 +146,22 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   const getBuildingTexture = (type: any) => {
     switch (type) {
-      case 'residential':
-        return residentialTexture;
-      case 'commercial':
-        return commercialTexture;
-      case 'industrial':
-        return industrialTexture;
-      case 'road':
-        return roadTexture;
+      case 'assembler1':
+        return assembler1Texture;
+      case 'assembler2':
+        return assembler2Texture;
+      case 'assembler3':
+        return assembler3Texture;
+      case 'excavator1':
+        return excavator1Texture;
+      case 'excavator2':
+        return excavator2Texture;
+      case 'excavator3':
+        return excavator3Texture;
+      case 'conveyor':
+        return conveyorTexture;
       default:
+        console.warn('Unknown building type:', type); // Warning for unknown types
         return null; // Default or unknown type
     }
   };
