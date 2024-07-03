@@ -10,7 +10,7 @@ import conveyorTexture from '../../textures/conveyor.png';
 import excavator2Texture from '../../textures/excavator.png';
 import excavator3Texture from '../../textures/excavator.png';
 import excavator1Texture from '../../textures/excavator.png';
-import { CitySprite } from '../CitySprite/CitySprite';
+import { GridSprite } from '../CitySprite/GridSprite';
 import './Grid.css';
 
 const GRID_SIZE = 200;
@@ -183,7 +183,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
             cellSize={CELL_SIZE} // Pass CELL_SIZE as a prop
           />
           {(!isDraggedCell(cell.x, cell.y)) && cell.building && (
-            <CitySprite
+            <GridSprite
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
               scale={1}

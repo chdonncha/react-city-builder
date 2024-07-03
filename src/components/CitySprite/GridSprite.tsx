@@ -2,7 +2,7 @@ import { useLoader, useThree } from '@react-three/fiber';
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
 
-interface CitySpriteProps {
+interface GridSpriteProps {
   imageUrl: string;
   position: [number, number, number];
   scale: number;
@@ -11,7 +11,7 @@ interface CitySpriteProps {
   GRID_DIVISIONS: number;
 }
 
-const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, GRID_SIZE, GRID_DIVISIONS }) => {
+const GridSprite: React.FC<GridSpriteProps> = ({ imageUrl, position, scale, GRID_SIZE, GRID_DIVISIONS }) => {
   const texture = useLoader(THREE.TextureLoader, imageUrl);
   const { scene } = useThree();
   const CELL_SIZE = GRID_SIZE / GRID_DIVISIONS;
@@ -41,4 +41,4 @@ const CitySprite: React.FC<CitySpriteProps> = ({ imageUrl, position, scale, GRID
   return null;
 };
 
-export { CitySprite };
+export { GridSprite };
