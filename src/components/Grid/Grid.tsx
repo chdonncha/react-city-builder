@@ -11,6 +11,7 @@ import excavator2Texture from '../../textures/excavator.png';
 import excavator3Texture from '../../textures/excavator.png';
 import excavator1Texture from '../../textures/excavator.png';
 import { GridSprite } from '../CitySprite/GridSprite';
+import { GridOutline } from '../GridOutline/GridOutline';
 import './Grid.css';
 
 const GRID_SIZE = 200;
@@ -42,32 +43,78 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     return initialCells;
   });
 
+  const [tempCells, setTempCells] = useState(cells);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<{ x: number, y: number } | null>(null);
-  const [tempCells, setTempCells] = useState(cells);
-  const [draggedCells, setDraggedCells] = useState<{ x: number, y: number }[]>([]);
+  const [hoveredCell, setHoveredCell] = useState<{ x: number, y: number } | null>(null);
 
   const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    setIsDragging(true);
-    setDragStart({ x, y });
-    setDraggedCells([]);
+    if (selectedZone.type === 'conveyor') {
+      setIsDragging(true);
+      setDragStart({ x, y });
+    } else {
+      handleMouseClick(x, y, event);
+    }
   };
 
   const handleMouseEnter = (x: number, y: number) => {
-    if (isDragging && selectedZone.type) {
+    if (isDragging && selectedZone.type === 'conveyor') {
       updateTempCells(x, y);
     }
+    setHoveredCell({ x, y });
   };
 
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    if (isDragging && selectedZone.type) {
+    if (isDragging && selectedZone.type === 'conveyor') {
       setCells(tempCells);
     }
     setIsDragging(false);
     setDragStart(null);
-    setDraggedCells([]);
+    setHoveredCell(null); // Reset the hovered cell on mouse up
+  };
+
+  const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
+    if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
+    if (selectedZone.type && selectedZone.type !== 'conveyor') {
+      if (validatePlacement(x, y)) {
+        updateCells(x, y);
+      }
+    }
+  };
+
+  const validatePlacement = (x: number, y: number) => {
+    // Check if the entire 2x2 area is valid and empty
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 2; j++) {
+        const cell = cells.find(cell => cell.x === x + i * CELL_SIZE && cell.y === y + j * CELL_SIZE);
+        if (!cell || cell.building) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  const updateCells = (x: number, y: number) => {
+    const newCells = cells.map(cell => {
+      if (selectedZone.type !== 'conveyor') {
+        const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
+        if (within2x2) {
+          return {
+            ...cell,
+            type: selectedZone.type,
+            density: selectedZone.density,
+            building: selectedZone.type,
+          };
+        }
+      }
+      return cell;
+    });
+
+    setCells(newCells);
+    setTempCells(newCells); // Ensure tempCells are updated to reflect the placed item
   };
 
   const updateTempCells = (x: number, y: number) => {
@@ -78,15 +125,12 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     const yMin = Math.min(dragStart.y, y);
     const yMax = Math.max(dragStart.y, y);
 
-    const newDraggedCells: { x: number, y: number }[] = [];
-
     const newTempCells = cells.map(cell => {
       if (selectedZone.type === 'conveyor') {
         // Allow conveyors only in straight lines
         if (dragStart.x === x) {
           // Vertical line
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
-            newDraggedCells.push({ x: cell.x, y: cell.y });
             return {
               ...cell,
               type: selectedZone.type,
@@ -97,7 +141,6 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
         } else if (dragStart.y === y) {
           // Horizontal line
           if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
-            newDraggedCells.push({ x: cell.x, y: cell.y });
             return {
               ...cell,
               type: selectedZone.type,
@@ -106,20 +149,11 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
             };
           }
         }
-      } else if (cell.x >= xMin && cell.x <= xMax && cell.y >= yMin && cell.y <= yMax) {
-        newDraggedCells.push({ x: cell.x, y: cell.y });
-        return {
-          ...cell,
-          type: selectedZone.type,
-          density: selectedZone.density,
-          building: selectedZone.type,
-        };
       }
       return cell;
     });
 
     setTempCells(newTempCells);
-    setDraggedCells(newDraggedCells);
   };
 
   const getColor = (cell, currentSelected) => {
@@ -166,12 +200,19 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     }
   };
 
-  const isDraggedCell = (x: number, y: number) => {
-    return draggedCells.some(cell => cell.x === x && cell.y === y);
-  };
-
   return (
     <>
+      {hoveredCell && selectedZone.type !== 'conveyor' && selectedZone.type && (
+        <GridOutline
+          position={[
+            hoveredCell.x + CELL_SIZE,
+            0,
+            hoveredCell.y + CELL_SIZE,
+          ]}
+          cellSize={CELL_SIZE}
+          valid={validatePlacement(hoveredCell.x, hoveredCell.y)}
+        />
+      )}
       {tempCells.map((cell) => (
         <React.Fragment key={`${cell.x}-${cell.y}`}>
           <GridSquare
@@ -182,7 +223,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
             color={getColor(cell, currentSelected)}
             cellSize={CELL_SIZE} // Pass CELL_SIZE as a prop
           />
-          {(!isDraggedCell(cell.x, cell.y)) && cell.building && (
+          {cell.building && (
             <GridSprite
               imageUrl={getBuildingTexture(cell.building)}
               position={[cell.x + CELL_SIZE / 2, 1, cell.y + CELL_SIZE / 2]}
