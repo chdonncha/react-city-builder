@@ -34,7 +34,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
         initialCells.push({
           x: j * CELL_SIZE - GRID_SIZE / 2,
           y: i * CELL_SIZE - GRID_SIZE / 2,
-          type: map[i][j] === 'grass' ? 'grass' : 'water',
+          type: map[i][j],
           density: null,
           building: null,
         });
@@ -173,6 +173,12 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
         return 'blue';
       case 'grass':
         return 'lime';
+      case 'gold':
+        return 'gold';
+      case 'iron':
+        return 'grey';
+      case 'coal':
+        return 'black';
       default:
         return 'white';
     }

@@ -1,4 +1,6 @@
 const RATIO = 0.8;
+const SCARCE_RATIO = 0.001; // Resource scarcity value
+const CLUSTER_SIZE = 3; // Size of the resource clumps
 
 const getRandomTile = (): string => {
   return Math.random() < RATIO ? 'grass' : 'water';
@@ -86,6 +88,47 @@ const generateRandomMap = (size: number): string[][] => {
     }
     finalMap.push(row);
   }
+
+  const placeResourceCluster = (resource: string) => {
+    const attempts = 100; // Number of attempts to find a suitable location
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      const startX = Math.floor(Math.random() * (size - CLUSTER_SIZE));
+      const startY = Math.floor(Math.random() * (size - CLUSTER_SIZE));
+
+      let canPlaceCluster = true;
+      for (let i = 0; i < CLUSTER_SIZE; i++) {
+        for (let j = 0; j < CLUSTER_SIZE; j++) {
+          const x = startX + i;
+          const y = startY + j;
+          if (finalMap[x][y] !== 'grass') {
+            canPlaceCluster = false;
+            break;
+          }
+        }
+        if (!canPlaceCluster) break;
+      }
+
+      if (canPlaceCluster) {
+        for (let i = 0; i < CLUSTER_SIZE; i++) {
+          for (let j = 0; j < CLUSTER_SIZE; j++) {
+            const x = startX + i;
+            const y = startY + j;
+            finalMap[x][y] = resource;
+          }
+        }
+        break;
+      }
+    }
+  };
+
+  // Place resource clusters
+  const resources = ['gold', 'iron', 'coal'];
+  resources.forEach((resource) => {
+    const numberOfClusters = Math.floor(SCARCE_RATIO * size * size);
+    for (let i = 0; i < numberOfClusters; i++) {
+      placeResourceCluster(resource);
+    }
+  });
 
   return finalMap;
 };
