@@ -11,6 +11,7 @@ import excavator2Texture from '../../textures/excavator.png';
 import excavator3Texture from '../../textures/excavator.png';
 import excavator1Texture from '../../textures/excavator.png';
 import { GridSprite } from '../CitySprite/GridSprite';
+import { GridOutline } from '../GridOutline/GridOutline';
 import './Grid.css';
 
 const GRID_SIZE = 200;
@@ -45,6 +46,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
   const [tempCells, setTempCells] = useState(cells);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<{ x: number, y: number } | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<{ x: number, y: number } | null>(null);
 
   const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
@@ -60,6 +62,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     if (isDragging && selectedZone.type === 'conveyor') {
       updateTempCells(x, y);
     }
+    setHoveredCell({ x, y });
   };
 
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
@@ -69,6 +72,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     }
     setIsDragging(false);
     setDragStart(null);
+    setHoveredCell(null); // Reset the hovered cell on mouse up
   };
 
   const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
@@ -183,6 +187,16 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   return (
     <>
+      {hoveredCell && selectedZone.type !== 'conveyor' && selectedZone.type && (
+        <GridOutline
+          position={[
+            hoveredCell.x + CELL_SIZE,
+            0,
+            hoveredCell.y + CELL_SIZE,
+          ]}
+          cellSize={CELL_SIZE}
+        />
+      )}
       {tempCells.map((cell) => (
         <React.Fragment key={`${cell.x}-${cell.y}`}>
           <GridSquare
@@ -209,3 +223,4 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 };
 
 export { Grid };
+
