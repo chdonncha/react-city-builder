@@ -78,8 +78,23 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
   const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     if (selectedZone.type && selectedZone.type !== 'conveyor') {
-      updateCells(x, y);
+      if (validatePlacement(x, y)) {
+        updateCells(x, y);
+      }
     }
+  };
+
+  const validatePlacement = (x: number, y: number) => {
+    // Check if the entire 2x2 area is valid and empty
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 2; j++) {
+        const cell = cells.find(cell => cell.x === x + i * CELL_SIZE && cell.y === y + j * CELL_SIZE);
+        if (!cell || cell.building) {
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   const updateCells = (x: number, y: number) => {
@@ -195,6 +210,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
             hoveredCell.y + CELL_SIZE,
           ]}
           cellSize={CELL_SIZE}
+          valid={validatePlacement(hoveredCell.x, hoveredCell.y)}
         />
       )}
       {tempCells.map((cell) => (
@@ -223,4 +239,3 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 };
 
 export { Grid };
-
