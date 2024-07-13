@@ -3,8 +3,9 @@ import { Canvas } from '@react-three/fiber';
 import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
 
-import { generateRandomMap } from '../../utils/mapUtils'; // Adjust the path based on your actual folder structure
+import { generateRandomMap } from '../../utils/mapUtils';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
+import { DeleteStructureButton } from '../DeleteStructureButton/DeleteStructureButton';
 import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
 import { ShowGridButton } from '../ShowGridButton/ShowGridButton';
@@ -45,10 +46,15 @@ const RenderGrid: React.FC = () => {
     }
   };
 
+  const handleDeleteStructure = () => {
+    console.log('Structure deleted');
+  };
+
   return (
     <>
       <ShowGridButton onToggleGridVisibility={toggleGridVisibility} showGrid={showGrid} />
       <RotateButtons rotateCamera={rotateCamera} />
+      <DeleteStructureButton onDeleteStructure={handleDeleteStructure} />
       <BuildMenu
         onToggleGridVisibility={toggleGridVisibility}
         onToggleAxesVisibility={toggleAxesVisibility}
