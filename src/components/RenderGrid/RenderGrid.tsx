@@ -15,18 +15,17 @@ const RenderGrid: React.FC = () => {
 
   const [showGrid, setShowGrid] = useState(true);
   const [showAxes, setShowAxes] = useState(false);
-  const [selectedZone, setSelectedZone] = useState<{ type: string | null; density: string | null }>({
+  const [selectedBuilding, setSelectedBuilding] = useState<{ type: string | null }>({
     type: null,
-    density: null,
   });
   const [currentSelected, setCurrentSelected] = useState<{ x: number; y: number } | null>(null);
   const [map] = useState(generateRandomMap(GRID_DIVISIONS));
 
   const toggleGridVisibility = () => setShowGrid(!showGrid);
   const toggleAxesVisibility = () => setShowAxes(!showAxes);
-  const handleSelectAssembler = (level: number) => setSelectedZone({ type: `assembler${level}`, density: null });
-  const handleSelectExcavator = (level: number) => setSelectedZone({ type: `excavator${level}`, density: null });
-  const handleSelectConveyor = () => setSelectedZone({ type: 'conveyor', density: null });
+  const handleSelectAssembler = (level: number) => setSelectedBuilding({ type: `assembler${level}` });
+  const handleSelectExcavator = (level: number) => setSelectedBuilding({ type: `excavator${level}` });
+  const handleSelectConveyor = () => setSelectedBuilding({ type: 'conveyor' });
 
   const orbitControlsRef = useRef(null);
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
@@ -76,7 +75,7 @@ const RenderGrid: React.FC = () => {
         <GridAndAxes
           showGrid={showGrid}
           showAxes={showAxes}
-          selectedZone={selectedZone}
+          selectedBuilding={selectedBuilding}
           currentSelected={currentSelected}
           setCurrentSelected={setCurrentSelected}
           map={map}
