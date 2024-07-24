@@ -77,10 +77,30 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
   const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     if (selectedBuilding.type && selectedBuilding.type !== 'conveyor') {
-      if (validatePlacement(x, y)) {
-        updateCells(x, y);
+      if (selectedBuilding.type === 'delete') {
+        handleDeleteClick(x, y);
+      } else {
+        if (validatePlacement(x, y)) {
+          updateCells(x, y);
+        }
       }
     }
+  };
+
+  const handleDeleteClick = (x: number, y: number) => {
+    const newCells = cells.map(cell => {
+      if (cell.x === x && cell.y === y && cell.building) {
+        return {
+          ...cell,
+          type: 'grass', // Revert to grass
+          building: null,
+        };
+      }
+      return cell;
+    });
+
+    setCells(newCells);
+    setTempCells(newCells); // Ensure tempCells are updated to reflect the deletion
   };
 
   const validatePlacement = (x: number, y: number) => {
