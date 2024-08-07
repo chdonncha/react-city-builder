@@ -5,7 +5,6 @@ import * as THREE from 'three';
 
 import { generateRandomMap } from '../../utils/mapUtils';
 import { BuildMenu } from '../BuildMenu/BuildMenu';
-import { DeleteStructureButton } from '../DeleteStructureButton/DeleteStructureButton';
 import { GridAndAxes } from '../Grid/GridAndAxes';
 import { RotateButtons } from '../RotateButtons/RotateButtons';
 import { ShowGridButton } from '../ShowGridButton/ShowGridButton';
