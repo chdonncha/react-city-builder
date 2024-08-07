@@ -76,13 +76,11 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
 
   const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    if (selectedBuilding.type && selectedBuilding.type !== 'conveyor') {
-      if (selectedBuilding.type === 'delete') {
-        handleDeleteClick(x, y);
-      } else {
-        if (validatePlacement(x, y)) {
-          updateCells(x, y);
-        }
+    if (selectedBuilding.type === 'delete') {
+      handleDeleteClick(x, y);
+    } else if (selectedBuilding.type && selectedBuilding.type !== 'conveyor') {
+      if (validatePlacement(x, y)) {
+        updateCells(x, y);
       }
     }
   };
@@ -118,15 +116,13 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
 
   const updateCells = (x: number, y: number) => {
     const newCells = cells.map(cell => {
-      if (selectedBuilding.type !== 'conveyor') {
-        const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
-        if (within2x2) {
-          return {
-            ...cell,
-            type: selectedBuilding.type,
-            building: selectedBuilding.type,
-          };
-        }
+      const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
+      if (within2x2) {
+        return {
+          ...cell,
+          type: selectedBuilding.type,
+          building: selectedBuilding.type,
+        };
       }
       return cell;
     });
@@ -224,7 +220,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
 
   return (
     <>
-      {hoveredCell && selectedBuilding.type !== 'conveyor' && selectedBuilding.type && (
+      {hoveredCell && selectedBuilding.type !== 'conveyor' && selectedBuilding.type !== 'delete' && selectedBuilding.type && (
         <GridOutline
           position={[
             hoveredCell.x + CELL_SIZE,
