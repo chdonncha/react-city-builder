@@ -33,3 +33,10 @@ canvas {
     right: 0;
     margin: 230px 16px 0 0 !important;
 }
+
+.delete-structure-button {
+    position: absolute !important;
+    z-index: 1000;
+    right: 0;
+    margin: 300px 16px 0 0 !important;
+}

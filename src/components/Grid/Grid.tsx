@@ -20,13 +20,13 @@ const CELL_SIZE = GRID_SIZE / GRID_DIVISIONS;
 
 interface GridProps {
   size: number;
-  selectedZone: { type: string | null; density: string | null };
+  selectedBuilding: { type: string | null };
   currentSelected: { x: number; y: number } | null;
   setCurrentSelected: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
   map: string[][]; // Add map as a prop
 }
 
-const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
+const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) => {
   const [cells, setCells] = useState(() => {
     const initialCells = [];
     for (let i = 0; i < GRID_DIVISIONS; i++) {
@@ -35,7 +35,6 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
           x: j * CELL_SIZE - GRID_SIZE / 2,
           y: i * CELL_SIZE - GRID_SIZE / 2,
           type: map[i][j],
-          density: null,
           building: null,
         });
       }
@@ -50,7 +49,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   const handleMouseDown = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    if (selectedZone.type === 'conveyor') {
+    if (selectedBuilding.type === 'conveyor') {
       setIsDragging(true);
       setDragStart({ x, y });
     } else {
@@ -59,7 +58,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
   };
 
   const handleMouseEnter = (x: number, y: number) => {
-    if (isDragging && selectedZone.type === 'conveyor') {
+    if (isDragging && selectedBuilding.type === 'conveyor') {
       updateTempCells(x, y);
     }
     setHoveredCell({ x, y });
@@ -67,7 +66,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    if (isDragging && selectedZone.type === 'conveyor') {
+    if (isDragging && selectedBuilding.type === 'conveyor') {
       setCells(tempCells);
     }
     setIsDragging(false);
@@ -77,11 +76,29 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   const handleMouseClick = (x: number, y: number, event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
-    if (selectedZone.type && selectedZone.type !== 'conveyor') {
+    if (selectedBuilding.type === 'delete') {
+      handleDeleteClick(x, y);
+    } else if (selectedBuilding.type && selectedBuilding.type !== 'conveyor') {
       if (validatePlacement(x, y)) {
         updateCells(x, y);
       }
     }
+  };
+
+  const handleDeleteClick = (x: number, y: number) => {
+    const newCells = cells.map(cell => {
+      if (cell.x === x && cell.y === y && cell.building) {
+        return {
+          ...cell,
+          type: 'grass', // Revert to grass
+          building: null,
+        };
+      }
+      return cell;
+    });
+
+    setCells(newCells);
+    setTempCells(newCells); // Ensure tempCells are updated to reflect the deletion
   };
 
   const validatePlacement = (x: number, y: number) => {
@@ -99,16 +116,13 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   const updateCells = (x: number, y: number) => {
     const newCells = cells.map(cell => {
-      if (selectedZone.type !== 'conveyor') {
-        const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
-        if (within2x2) {
-          return {
-            ...cell,
-            type: selectedZone.type,
-            density: selectedZone.density,
-            building: selectedZone.type,
-          };
-        }
+      const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
+      if (within2x2) {
+        return {
+          ...cell,
+          type: selectedBuilding.type,
+          building: selectedBuilding.type,
+        };
       }
       return cell;
     });
@@ -126,16 +140,15 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
     const yMax = Math.max(dragStart.y, y);
 
     const newTempCells = cells.map(cell => {
-      if (selectedZone.type === 'conveyor') {
+      if (selectedBuilding.type === 'conveyor') {
         // Allow conveyors only in straight lines
         if (dragStart.x === x) {
           // Vertical line
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
             return {
               ...cell,
-              type: selectedZone.type,
-              density: selectedZone.density,
-              building: selectedZone.type,
+              type: selectedBuilding.type,
+              building: selectedBuilding.type,
             };
           }
         } else if (dragStart.y === y) {
@@ -143,9 +156,8 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
           if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
             return {
               ...cell,
-              type: selectedZone.type,
-              density: selectedZone.density,
-              building: selectedZone.type,
+              type: selectedBuilding.type,
+              building: selectedBuilding.type,
             };
           }
         }
@@ -208,7 +220,7 @@ const Grid: React.FC<GridProps> = ({ selectedZone, currentSelected, map }) => {
 
   return (
     <>
-      {hoveredCell && selectedZone.type !== 'conveyor' && selectedZone.type && (
+      {hoveredCell && selectedBuilding.type !== 'conveyor' && selectedBuilding.type !== 'delete' && selectedBuilding.type && (
         <GridOutline
           position={[
             hoveredCell.x + CELL_SIZE,

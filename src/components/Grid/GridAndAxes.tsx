@@ -8,7 +8,7 @@ const GRID_DIVISIONS = 50;
 interface GridAndAxesProps {
   showGrid: boolean;
   showAxes: boolean;
-  selectedZone: { type: string | null; density: string | null };
+  selectedBuilding: { type: string | null };
   currentSelected: { x: number; y: number } | null;
   setCurrentSelected: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
   map: string[][];
@@ -17,7 +17,7 @@ interface GridAndAxesProps {
 const GridAndAxes: React.FC<GridAndAxesProps> = ({
                                                    showGrid,
                                                    showAxes,
-                                                   selectedZone,
+                                                   selectedBuilding,
                                                    currentSelected,
                                                    setCurrentSelected,
                                                    map,
@@ -28,7 +28,7 @@ const GridAndAxes: React.FC<GridAndAxesProps> = ({
       {showAxes && <axesHelper args={[100]} />}
       <Grid
         size={GRID_SIZE}
-        selectedZone={selectedZone}
+        selectedBuilding={selectedBuilding}
         currentSelected={currentSelected}
         setCurrentSelected={setCurrentSelected}
         map={map}

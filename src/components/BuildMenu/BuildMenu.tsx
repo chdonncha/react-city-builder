@@ -11,14 +11,15 @@ import React, { useState } from 'react';
 import './BuildMenu.css';
 
 const BuildMenu = ({
-                     onToggleGridVisibility,
-                     onToggleAxesVisibility,
-                     showGrid,
-                     showAxes,
-                     onSelectAssembler,
-                     onSelectExcavator,
-                     onSelectConveyor,
-                   }) => {
+  onToggleGridVisibility,
+  onToggleAxesVisibility,
+  showGrid,
+  showAxes,
+  onSelectAssembler,
+  onSelectExcavator,
+  onSelectConveyor,
+  onSelectDelete,
+}) => {
   const [selected, setSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -53,6 +54,25 @@ const BuildMenu = ({
         >
           <ListItemIcon>{showAxes ? <VisibilityIcon /> : <VisibilityOffIcon />}</ListItemIcon>
           <ListItemText primary={showAxes ? 'Hide Axes' : 'Show Axes'} />
+        </ListItemButton>
+      </ListItem>
+    </>
+  );
+
+  const DeleteOption = () => (
+    <>
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            setSelected('delete');
+            onSelectDelete();
+          }}
+          selected={selected === 'delete'}
+        >
+          <ListItemIcon>
+            <AddRoadIcon />
+          </ListItemIcon>
+          <ListItemText primary="delete" />
         </ListItemButton>
       </ListItem>
     </>
@@ -122,6 +142,7 @@ const BuildMenu = ({
   const BuildingContent = () => (
     <List>
       <VisualOptions />
+      <DeleteOption />
       <InfrastructureOptions />
       <AssemblerOptions />
       <ExcavatorOptions />
