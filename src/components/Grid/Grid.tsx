@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 
 import { GridSquare } from './GridSquare';
 
-import assembler2Texture from '../../textures/assembler.png';
-import assembler3Texture from '../../textures/assembler.png';
-import assembler1Texture from '../../textures/assembler.png';
 import conveyorTexture from '../../textures/conveyor.png';
-import excavator2Texture from '../../textures/excavator.png';
-import excavator3Texture from '../../textures/excavator.png';
 import excavator1Texture from '../../textures/excavator.png';
+import excavator3Texture from '../../textures/excavator.png';
+import excavator2Texture from '../../textures/excavator.png';
+import assemblerMultispriteA from '../../textures/extractorA.png';
+import assemblerMultispriteB from '../../textures/extractorB.png';
+import assemblerMultispriteC from '../../textures/extractorC.png';
+import assemblerMultispriteD from '../../textures/extractorD.png';
 import { GridSprite } from '../CitySprite/GridSprite';
 import { GridOutline } from '../GridOutline/GridOutline';
 import './Grid.css';
@@ -118,10 +119,20 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     const newCells = cells.map(cell => {
       const within2x2 = (cell.x >= x && cell.x < x + 2 * CELL_SIZE) && (cell.y >= y && cell.y < y + 2 * CELL_SIZE);
       if (within2x2) {
+        let buildingType = selectedBuilding.type;
+        if (cell.x === x && cell.y === y) {
+          buildingType = `${selectedBuilding.type}A`;
+        } else if (cell.x === x + CELL_SIZE && cell.y === y) {
+          buildingType = `${selectedBuilding.type}B`;
+        } else if (cell.x === x && cell.y === y + CELL_SIZE) {
+          buildingType = `${selectedBuilding.type}C`;
+        } else if (cell.x === x + CELL_SIZE && cell.y === y + CELL_SIZE) {
+          buildingType = `${selectedBuilding.type}D`;
+        }
         return {
           ...cell,
-          type: selectedBuilding.type,
-          building: selectedBuilding.type,
+          type: buildingType,
+          building: buildingType,
         };
       }
       return cell;
@@ -171,9 +182,18 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
   const getColor = (cell, currentSelected) => {
     if (currentSelected && cell.x === currentSelected.x && cell.y === currentSelected.y) return 'lightgrey';
     switch (cell.type) {
-      case 'assembler1':
-      case 'assembler2':
-      case 'assembler3':
+      case 'assembler1A':
+      case 'assembler1B':
+      case 'assembler1C':
+      case 'assembler1D':
+      case 'assembler2A':
+      case 'assembler2B':
+      case 'assembler2C':
+      case 'assembler2D':
+      case 'assembler3A':
+      case 'assembler3B':
+      case 'assembler3C':
+      case 'assembler3D':
         return 'lightgreen';
       case 'excavator1':
       case 'excavator2':
@@ -198,12 +218,22 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
 
   const getBuildingTexture = (type: any) => {
     switch (type) {
-      case 'assembler1':
-        return assembler1Texture;
-      case 'assembler2':
-        return assembler2Texture;
-      case 'assembler3':
-        return assembler3Texture;
+      case 'assembler1A':
+      case 'assembler2A':
+      case 'assembler3A':
+        return assemblerMultispriteA;
+      case 'assembler1B':
+      case 'assembler2B':
+      case 'assembler3B':
+        return assemblerMultispriteB;
+      case 'assembler1C':
+      case 'assembler2C':
+      case 'assembler3C':
+        return assemblerMultispriteC;
+      case 'assembler1D':
+      case 'assembler2D':
+      case 'assembler3D':
+        return assemblerMultispriteD;
       case 'excavator1':
         return excavator1Texture;
       case 'excavator2':
