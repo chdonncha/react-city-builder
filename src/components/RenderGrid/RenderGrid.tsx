@@ -65,7 +65,7 @@ const RenderGrid: React.FC = () => {
           position={[0, 200, 0]}
           near={-500}
           far={500}
-          zoom={50}
+          zoom={15}
           makeDefault
         />
         <GridAndAxes
