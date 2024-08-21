@@ -108,7 +108,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 2; j++) {
         const cell = cells.find(cell => cell.x === x + i * CELL_SIZE && cell.y === y + j * CELL_SIZE);
-        if (!cell || cell.building) {
+        if (!cell || cell.building || cell.type === 'water') {
           return false;
         }
       }
