@@ -38,6 +38,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           y: i * CELL_SIZE - GRID_SIZE / 2,
           type: map[i][j],
           building: null,
+          isTemporary: false,
         });
       }
     }
@@ -69,7 +70,18 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     if (isDragging && selectedBuilding.type === 'conveyor') {
-      setCells(tempCells);
+      const finalizedCells = tempCells.map(cell => {
+        if (cell.type === 'conveyor') {
+          return {
+            ...cell,
+            building: 'conveyor',
+          };
+        }
+        return cell;
+      });
+
+      setCells(finalizedCells);
+      setTempCells(finalizedCells);
     }
     setIsDragging(false);
     setDragStart(null);
@@ -94,6 +106,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           ...cell,
           type: 'grass', // Revert to grass
           building: null,
+          isTemporary: false,
         };
       }
       return cell;
@@ -134,6 +147,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           ...cell,
           type: buildingType,
           building: buildingType,
+          isTemporary: false,
         };
       }
       return cell;
@@ -159,8 +173,8 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
             return {
               ...cell,
-              type: selectedBuilding.type,
-              building: selectedBuilding.type,
+              type: 'conveyor',
+              building: null,    // Do not display the building sprite yet
             };
           }
         } else if (dragStart.y === y) {
@@ -168,8 +182,8 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
             return {
               ...cell,
-              type: selectedBuilding.type,
-              building: selectedBuilding.type,
+              type: 'conveyor',
+              building: null,    // Do not display the building sprite yet
             };
           }
         }
@@ -182,6 +196,9 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
 
   const getColor = (cell, currentSelected) => {
     if (currentSelected && cell.x === currentSelected.x && cell.y === currentSelected.y) return 'lightgrey';
+    if (cell.building === null && cell.type === 'conveyor') {
+      return 'transparent'; // or return 'none' to show no color for temporary cells
+    }
     switch (cell.type) {
       case 'assembler1A':
       case 'assembler1B':
@@ -210,7 +227,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
       case 'excavator3D':
         return 'yellow';
       case 'conveyor':
-        return 'dimgrey';
+        return 'dimgrey'; // This color is applied when the conveyor is fully placed
       case 'water':
         return 'blue';
       case 'grass':
@@ -298,6 +315,17 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
               scale={1}
               GRID_SIZE={GRID_SIZE}
               GRID_DIVISIONS={GRID_DIVISIONS}
+            />
+          )}
+          {cell.type === 'conveyor' && !cell.building && (
+            <GridOutline
+              position={[
+                cell.x + CELL_SIZE * 0.5, // Align with the center of the cell
+                0,
+                cell.y + CELL_SIZE * 0.5,
+              ]}
+              cellSize={CELL_SIZE / 2}
+              valid={true} // Assume the conveyor placement is valid for now
             />
           )}
         </React.Fragment>
