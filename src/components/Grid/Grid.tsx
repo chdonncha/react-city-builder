@@ -2,16 +2,7 @@ import { ThreeEvent } from '@react-three/fiber';
 import React, { useState } from 'react';
 
 import { GridSquare } from './GridSquare';
-
-import conveyorTexture from '../../textures/conveyor.png';
-import assemblerMultispriteA from '../../textures/excavatorA.png';
-import excavatorMultispriteA from '../../textures/excavatorA.png';
-import excavatorMultispriteB from '../../textures/excavatorB.png';
-import assemblerMultispriteB from '../../textures/excavatorB.png';
-import excavatorMultispriteC from '../../textures/excavatorC.png';
-import assemblerMultispriteC from '../../textures/excavatorC.png';
-import excavatorMultispriteD from '../../textures/excavatorD.png';
-import assemblerMultispriteD from '../../textures/excavatorD.png';
+import { getColor, getBuildingTexture } from '../../utils/gridUtils';
 import { GridSprite } from '../CitySprite/GridSprite';
 import { GridOutline } from '../GridOutline/GridOutline';
 import './Grid.css';
@@ -38,6 +29,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           y: i * CELL_SIZE - GRID_SIZE / 2,
           type: map[i][j],
           building: null,
+          isTemporary: false,
         });
       }
     }
@@ -69,7 +61,26 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     if (isDragging && selectedBuilding.type === 'conveyor') {
-      setCells(tempCells);
+      const validPlacement = tempCells.every(cell => cell.type !== 'conveyor' || cell.validPlacement);
+
+      if (validPlacement) {
+        const finalizedCells = tempCells.map(cell => {
+          if (cell.type === 'conveyor') {
+            return {
+              ...cell,
+              building: 'conveyor',
+              isTemporary: false,
+            };
+          }
+          return cell;
+        });
+
+        setCells(finalizedCells);
+        setTempCells(finalizedCells);
+      } else {
+        // If the placement is invalid, reset tempCells to match cells (remove grid outlines)
+        setTempCells(cells);
+      }
     }
     setIsDragging(false);
     setDragStart(null);
@@ -94,6 +105,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           ...cell,
           type: 'grass', // Revert to grass
           building: null,
+          isTemporary: false,
         };
       }
       return cell;
@@ -108,7 +120,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 2; j++) {
         const cell = cells.find(cell => cell.x === x + i * CELL_SIZE && cell.y === y + j * CELL_SIZE);
-        if (!cell || cell.building) {
+        if (!cell || cell.building || cell.type === 'water') {
           return false;
         }
       }
@@ -134,6 +146,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           ...cell,
           type: buildingType,
           building: buildingType,
+          isTemporary: false,
         };
       }
       return cell;
@@ -151,6 +164,18 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     const yMin = Math.min(dragStart.y, y);
     const yMax = Math.max(dragStart.y, y);
 
+    let validPlacement = true;
+
+    // Check if any segment of the conveyor overlaps water
+    for (let i = xMin; i <= xMax; i += CELL_SIZE) {
+      for (let j = yMin; j <= yMax; j += CELL_SIZE) {
+        const cell = cells.find(cell => cell.x === i && cell.y === j);
+        if (cell && cell.type === 'water') {
+          validPlacement = false;
+        }
+      }
+    }
+
     const newTempCells = cells.map(cell => {
       if (selectedBuilding.type === 'conveyor') {
         // Allow conveyors only in straight lines
@@ -159,8 +184,10 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           if (cell.x === dragStart.x && cell.y >= yMin && cell.y <= yMax) {
             return {
               ...cell,
-              type: selectedBuilding.type,
-              building: selectedBuilding.type,
+              type: 'conveyor',
+              building: null,    // Do not display the building sprite yet
+              isTemporary: true,
+              validPlacement,
             };
           }
         } else if (dragStart.y === y) {
@@ -168,8 +195,10 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
           if (cell.y === dragStart.y && cell.x >= xMin && cell.x <= xMax) {
             return {
               ...cell,
-              type: selectedBuilding.type,
-              building: selectedBuilding.type,
+              type: 'conveyor',
+              building: null,    // Do not display the building sprite yet
+              isTemporary: true,
+              validPlacement,
             };
           }
         }
@@ -178,94 +207,6 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     });
 
     setTempCells(newTempCells);
-  };
-
-  const getColor = (cell, currentSelected) => {
-    if (currentSelected && cell.x === currentSelected.x && cell.y === currentSelected.y) return 'lightgrey';
-    switch (cell.type) {
-      case 'assembler1A':
-      case 'assembler1B':
-      case 'assembler1C':
-      case 'assembler1D':
-      case 'assembler2A':
-      case 'assembler2B':
-      case 'assembler2C':
-      case 'assembler2D':
-      case 'assembler3A':
-      case 'assembler3B':
-      case 'assembler3C':
-      case 'assembler3D':
-        return 'lightgreen';
-      case 'excavator1A':
-      case 'excavator1B':
-      case 'excavator1C':
-      case 'excavator1D':
-      case 'excavator2A':
-      case 'excavator2B':
-      case 'excavator2C':
-      case 'excavator2D':
-      case 'excavator3A':
-      case 'excavator3B':
-      case 'excavator3C':
-      case 'excavator3D':
-        return 'yellow';
-      case 'conveyor':
-        return 'dimgrey';
-      case 'water':
-        return 'blue';
-      case 'grass':
-        return 'lime';
-      case 'gold':
-        return 'gold';
-      case 'iron':
-        return 'grey';
-      case 'coal':
-        return 'black';
-      default:
-        return 'white';
-    }
-  };
-
-  const getBuildingTexture = (type: any) => {
-    switch (type) {
-      case 'assembler1A':
-      case 'assembler2A':
-      case 'assembler3A':
-        return assemblerMultispriteA;
-      case 'assembler1B':
-      case 'assembler2B':
-      case 'assembler3B':
-        return assemblerMultispriteB;
-      case 'assembler1C':
-      case 'assembler2C':
-      case 'assembler3C':
-        return assemblerMultispriteC;
-      case 'assembler1D':
-      case 'assembler2D':
-      case 'assembler3D':
-        return assemblerMultispriteD;
-      case 'excavator1A':
-      case 'excavator2A':
-      case 'excavator3A':
-        return excavatorMultispriteA;
-      case 'excavator1B':
-      case 'excavator2B':
-      case 'excavator3B':
-        return excavatorMultispriteB;
-      case 'excavator1C':
-      case 'excavator2C':
-      case 'excavator3C':
-        return excavatorMultispriteC;
-      case 'excavator1D':
-      case 'excavator2D':
-      case 'excavator3D':
-        return excavatorMultispriteD;
-      case 'conveyor':
-        return conveyorTexture;
-      default:
-        console.warn('Unknown building type:', type); // Warning for unknown types
-        return null; // Default or unknown type
-    }
   };
 
   return (
@@ -298,6 +239,17 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
               scale={1}
               GRID_SIZE={GRID_SIZE}
               GRID_DIVISIONS={GRID_DIVISIONS}
+            />
+          )}
+          {cell.type === 'conveyor' && !cell.building && (
+            <GridOutline
+              position={[
+                cell.x + CELL_SIZE * 0.5, // Align with the center of the cell
+                0,
+                cell.y + CELL_SIZE * 0.5,
+              ]}
+              cellSize={CELL_SIZE / 2}
+              valid={cell.validPlacement} // Use validPlacement to determine color
             />
           )}
         </React.Fragment>

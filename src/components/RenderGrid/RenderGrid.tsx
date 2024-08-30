@@ -25,7 +25,7 @@ const RenderGrid: React.FC = () => {
   const handleSelectAssembler = (level: number) => setSelectedBuilding({ type: `assembler${level}` });
   const handleSelectExcavator = (level: number) => setSelectedBuilding({ type: `excavator${level}` });
   const handleSelectConveyor = () => setSelectedBuilding({ type: 'conveyor' });
-  const handleDeleteStructure = () => setSelectedBuilding({ type: 'delete' });
+  const handleDeleteBuilding = () => setSelectedBuilding({ type: 'delete' });
 
   const orbitControlsRef = useRef(null);
   const cameraRef = useRef<THREE.OrthographicCamera>(null);
@@ -55,7 +55,7 @@ const RenderGrid: React.FC = () => {
         onSelectAssembler={handleSelectAssembler}
         onSelectExcavator={handleSelectExcavator}
         onSelectConveyor={handleSelectConveyor}
-        onSelectDelete={handleDeleteStructure}
+        onSelectDelete={handleDeleteBuilding}
         showGrid={showGrid}
         showAxes={showAxes}
       />
