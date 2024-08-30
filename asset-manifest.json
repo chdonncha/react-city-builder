@@ -1,18 +1,15 @@
 {
   "files": {
-    "main.css": "/react-city-builder/static/css/main.1a6b97e4.css",
-    "main.js": "/react-city-builder/static/js/main.9dc5296d.js",
+    "main.css": "/react-city-builder/static/css/main.8a6e598e.css",
+    "main.js": "/react-city-builder/static/js/main.e8000f3d.js",
     "static/js/453.97f24443.chunk.js": "/react-city-builder/static/js/453.97f24443.chunk.js",
-    "static/media/assembler.png": "/react-city-builder/static/media/assembler.3925183ec365d50d78e7.png",
-    "static/media/excavator.png": "/react-city-builder/static/media/excavator.3925183ec365d50d78e7.png",
-    "static/media/conveyor.png": "/react-city-builder/static/media/conveyor.89e8686b4868ca5baf3c.png",
     "index.html": "/react-city-builder/index.html",
-    "main.1a6b97e4.css.map": "/react-city-builder/static/css/main.1a6b97e4.css.map",
-    "main.9dc5296d.js.map": "/react-city-builder/static/js/main.9dc5296d.js.map",
+    "main.8a6e598e.css.map": "/react-city-builder/static/css/main.8a6e598e.css.map",
+    "main.e8000f3d.js.map": "/react-city-builder/static/js/main.e8000f3d.js.map",
     "453.97f24443.chunk.js.map": "/react-city-builder/static/js/453.97f24443.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1a6b97e4.css",
-    "static/js/main.9dc5296d.js"
+    "static/css/main.8a6e598e.css",
+    "static/js/main.e8000f3d.js"
   ]
 }
