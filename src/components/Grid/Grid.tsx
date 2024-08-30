@@ -61,18 +61,26 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
   const handleMouseUp = (event: ThreeEvent<PointerEvent>) => {
     if (event.nativeEvent.button !== 0) return; // Ensure it is a left-click
     if (isDragging && selectedBuilding.type === 'conveyor') {
-      const finalizedCells = tempCells.map(cell => {
-        if (cell.type === 'conveyor') {
-          return {
-            ...cell,
-            building: 'conveyor',
-          };
-        }
-        return cell;
-      });
+      const validPlacement = tempCells.every(cell => cell.type !== 'conveyor' || cell.validPlacement);
 
-      setCells(finalizedCells);
-      setTempCells(finalizedCells);
+      if (validPlacement) {
+        const finalizedCells = tempCells.map(cell => {
+          if (cell.type === 'conveyor') {
+            return {
+              ...cell,
+              building: 'conveyor',
+              isTemporary: false,
+            };
+          }
+          return cell;
+        });
+
+        setCells(finalizedCells);
+        setTempCells(finalizedCells);
+      } else {
+        // If the placement is invalid, reset tempCells to match cells (remove grid outlines)
+        setTempCells(cells);
+      }
     }
     setIsDragging(false);
     setDragStart(null);
@@ -156,6 +164,18 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
     const yMin = Math.min(dragStart.y, y);
     const yMax = Math.max(dragStart.y, y);
 
+    let validPlacement = true;
+
+    // Check if any segment of the conveyor overlaps water
+    for (let i = xMin; i <= xMax; i += CELL_SIZE) {
+      for (let j = yMin; j <= yMax; j += CELL_SIZE) {
+        const cell = cells.find(cell => cell.x === i && cell.y === j);
+        if (cell && cell.type === 'water') {
+          validPlacement = false;
+        }
+      }
+    }
+
     const newTempCells = cells.map(cell => {
       if (selectedBuilding.type === 'conveyor') {
         // Allow conveyors only in straight lines
@@ -166,6 +186,8 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
               ...cell,
               type: 'conveyor',
               building: null,    // Do not display the building sprite yet
+              isTemporary: true,
+              validPlacement,
             };
           }
         } else if (dragStart.y === y) {
@@ -175,6 +197,8 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
               ...cell,
               type: 'conveyor',
               building: null,    // Do not display the building sprite yet
+              isTemporary: true,
+              validPlacement,
             };
           }
         }
@@ -225,7 +249,7 @@ const Grid: React.FC<GridProps> = ({ selectedBuilding, currentSelected, map }) =
                 cell.y + CELL_SIZE * 0.5,
               ]}
               cellSize={CELL_SIZE / 2}
-              valid={true} // Assume the conveyor placement is valid for now
+              valid={cell.validPlacement} // Use validPlacement to determine color
             />
           )}
         </React.Fragment>
